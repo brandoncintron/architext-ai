@@ -1,5 +1,5 @@
 /**
- * @file This component displays the final generated TDD.
+ * @file This component renders the final results step, displaying the generated TDD.
  */
 import {
   Card,
@@ -8,23 +8,50 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Check, Clipboard } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { useState } from "react";
 
-export const ResultsStep = () => {
+interface ResultsStepProps {
+  tdd: string;
+}
+
+export const ResultsStep = ({ tdd }: ResultsStepProps) => {
+  const [hasCopied, setHasCopied] = useState(false);
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(tdd);
+    setHasCopied(true);
+    setTimeout(() => {
+      setHasCopied(false);
+    }, 2000);
+  };
+
   return (
-    <Card className="w-full max-w-2xl">
+    <Card className="w-full max-w-4xl">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">
-          Your Technical Design Document
-        </CardTitle>
-        <CardDescription>
-          Here is the generated plan for your project. You can copy it to your
-          clipboard.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="prose prose-sm max-w-none rounded-lg border p-4">
-          <p>Generating your document...</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-2xl font-bold">
+              Your Technical Design Document is Ready
+            </CardTitle>
+            <CardDescription>
+              Review the generated TDD below. You can copy it to your clipboard.
+            </CardDescription>
+          </div>
+          <Button variant="outline" size="icon" onClick={copyToClipboard}>
+            {hasCopied ? (
+              <Check className="h-4 w-4" />
+            ) : (
+              <Clipboard className="h-4 w-4" />
+            )}
+          </Button>
         </div>
+      </CardHeader>
+      <CardContent className="prose prose-sm dark:prose-invert max-w-none">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{tdd}</ReactMarkdown>
       </CardContent>
     </Card>
   );

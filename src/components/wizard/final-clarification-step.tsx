@@ -11,7 +11,12 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
-export const FinalClarificationStep = () => {
+interface FinalClarificationStepProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export const FinalClarificationStep = ({ value, onChange }: FinalClarificationStepProps) => {
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
@@ -32,6 +37,8 @@ export const FinalClarificationStep = () => {
             placeholder="e.g., Please prioritize open-source technologies and ensure the database is GDPR compliant."
             id="clarifications"
             rows={5}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
           />
         </div>
       </CardContent>
