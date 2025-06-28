@@ -22,11 +22,17 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useLandingPageForm } from "./hooks/use-landing-page-form";
+import { LandingPageFormValues } from "./utils/schema";
 
 const platforms = ["Web App", "Mobile App", "Desktop App"] as const;
 
-export const LandingPageForm = () => {
-  const { form, onSubmit } = useLandingPageForm();
+interface LandingPageFormProps {
+  onSubmit: (values: LandingPageFormValues) => void;
+  isSubmitting: boolean;
+}
+
+export const LandingPageForm = ({ onSubmit, isSubmitting }: LandingPageFormProps) => {
+  const { form } = useLandingPageForm({ onSubmit });
 
   return (
     <Card className="w-full max-w-2xl">
@@ -88,8 +94,8 @@ export const LandingPageForm = () => {
             />
           </CardContent>
           <CardFooter className="flex justify-end">
-            <Button type="submit" size="lg">
-              Start Building
+            <Button type="submit" size="lg" disabled={isSubmitting}>
+              {isSubmitting ? "Generating..." : "Start Building"}
             </Button>
           </CardFooter>
         </form>
