@@ -43,6 +43,6 @@ yarn-error.log*
 next-env.d.ts
 
 # project docs
-PRD.txt
+PRD.md
 DD.txt
 /.cursor/
