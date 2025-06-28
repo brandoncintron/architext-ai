@@ -19,7 +19,7 @@ export const FinalClarificationStep = () => {
           Final Clarifications
         </CardTitle>
         <CardDescription>
-          Is there anything else you'd like to add? Provide any final constraints,
+          Is there anything else you&apos;d like to add? Provide any final constraints,
           preferences, or context for the AI.
         </CardDescription>
       </CardHeader>

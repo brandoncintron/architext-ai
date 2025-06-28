@@ -47,7 +47,7 @@ export const LandingPageForm = () => {
               name="idea"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>What's your project idea?</FormLabel>
+                  <FormLabel>What&apos;s your project idea?</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="e.g., I want to build a resume-review app for students"
