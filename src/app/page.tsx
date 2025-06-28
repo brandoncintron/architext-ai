@@ -8,7 +8,7 @@ import { Github } from "lucide-react";
 
 const HomePage = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-24">
+    <main className="flex min-h-screen flex-col items-center justify-center md:p-24">
       <Wizard />
       <div className="absolute right-8 top-6 flex items-center space-x-8">
         <Button
