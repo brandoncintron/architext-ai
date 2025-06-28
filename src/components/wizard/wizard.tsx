@@ -6,76 +6,97 @@
 import { useState } from "react";
 import { LandingPageForm } from "@/components/landing-page/landing-page-form";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { QuestionStep } from "./question-step";
 import { FinalClarificationStep } from "./final-clarification-step";
 import { ResultsStep } from "./results-step";
+import { LandingPageFormValues } from "../landing-page/utils/schema";
 
-const WIZARD_STEPS = [
-  { component: <LandingPageForm />, name: "Initial Idea" },
-  {
-    component: (
-      <QuestionStep
-        question="What is the most critical priority for the architecture?"
-        description="This helps in making trade-off decisions later on."
-        options={[
-          "Speed / Low Latency",
-          "Scalability",
-          "High Availability",
-          "Security",
-          "Cost-Effectiveness",
-        ]}
-      />
-    ),
-    name: "Question 1",
-  },
-  {
-    component: (
-      <QuestionStep
-        question="What is the expected user load for the first six months?"
-        description="This will influence database and infrastructure choices."
-        options={["< 1,000 Users", "1k - 10k Users", "10k - 100k Users", "100k+ Users"]}
-      />
-    ),
-    name: "Question 2",
-  },
-  {
-    component: (
-      <QuestionStep
-        question="How will user authentication be handled?"
-        description="Select the primary method for identifying users."
-        options={[
-          "Email & Password",
-          "Social Logins (Google, GitHub)",
-          "Magic Links",
-          "Not Required",
-        ]}
-      />
-    ),
-    name: "Question 3",
-  },
-  { component: <FinalClarificationStep />, name: "Final Clarification" },
-  { component: <ResultsStep />, name: "Results" },
-];
+interface Question {
+  question: string;
+  options: string[];
+}
 
 export const Wizard = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [answers, setAnswers] = useState<string[]>([]);
+
+  const handleInitialSubmit = async (values: LandingPageFormValues) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/generate-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate questions.");
+      }
+
+      const data = await response.json();
+      setQuestions(data.questions);
+      setAnswers(new Array(data.questions.length).fill(""));
+      goToNextStep();
+    } catch (error) {
+      console.error(error);
+      // TODO: Add user-facing error handling
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const handleAnswerSelect = (questionIndex: number, option: string) => {
+    const newAnswers = [...answers];
+    newAnswers[questionIndex] = option;
+    setAnswers(newAnswers);
+  };
+
+  const steps = [
+    {
+      name: "Initial Idea",
+      component: <LandingPageForm onSubmit={handleInitialSubmit} isSubmitting={isLoading} />,
+    },
+    ...questions.map((q, index) => ({
+      name: `Question ${index + 1}`,
+      component: (
+        <QuestionStep
+          question={q.question}
+          options={q.options}
+          selection={answers[index]}
+          onSelectionChange={(option) => handleAnswerSelect(index, option)}
+        />
+      ),
+    })),
+    { 
+      name: "Final Clarification",
+      component: <FinalClarificationStep />
+    },
+    { 
+      name: "Results",
+      component: <ResultsStep />
+    },
+  ];
 
   const goToNextStep = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, WIZARD_STEPS.length - 1));
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
   };
 
   const goToPreviousStep = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
-  const CurrentComponent = WIZARD_STEPS[currentStep].component;
+  const CurrentComponent = steps[currentStep].component;
+  const isLastStep = currentStep === steps.length - 1;
+  const isFirstStep = currentStep === 0;
 
   return (
     <div className="relative flex w-full flex-col items-center justify-center">
       <div className="absolute inset-x-0 top-0 flex justify-center pt-4">
         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-          {WIZARD_STEPS.map((step, index) => (
+          {steps.map((step, index) => (
             <div key={step.name} className="flex items-center space-x-2">
               <div
                 className={`flex h-6 w-6 items-center justify-center rounded-full ${
@@ -91,7 +112,7 @@ export const Wizard = () => {
               >
                 {step.name}
               </span>
-              {index < WIZARD_STEPS.length - 1 && (
+              {index < steps.length - 1 && (
                 <div className="h-px w-12 bg-muted" />
               )}
             </div>
@@ -100,7 +121,7 @@ export const Wizard = () => {
       </div>
 
       <div className="flex w-full min-h-[520px] max-w-2xl items-center justify-center pt-24">
-        {CurrentComponent}
+        {isLoading && currentStep === 0 ? <Loader2 className="h-8 w-8 animate-spin" /> : CurrentComponent}
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 z-10 bg-background/80 p-4 backdrop-blur-sm">
@@ -108,7 +129,7 @@ export const Wizard = () => {
           <Button
             variant="outline"
             onClick={goToPreviousStep}
-            disabled={currentStep === 0}
+            disabled={isFirstStep}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Previous
@@ -116,7 +137,7 @@ export const Wizard = () => {
           <Button
             variant="default"
             onClick={goToNextStep}
-            disabled={currentStep === WIZARD_STEPS.length - 1}
+            disabled={isLastStep || currentStep > 0 && !answers[currentStep - 1]}
           >
             Next
             <ArrowRight className="ml-2 h-4 w-4" />
