@@ -24,3 +24,10 @@ class QuestionRouter(BaseModel):
         ...,
         description="A list of 3 to 5 dynamically generated questions to ask the user."
     )
+
+class TDD(BaseModel):
+    """The final, complete Technical Design Document."""
+    tdd: str = Field(
+        ...,
+        description="The complete TDD in Markdown format, following the standardized structure."
+    )

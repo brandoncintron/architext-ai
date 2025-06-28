@@ -2,9 +2,9 @@
 @file This file defines the LangChain chains for the application.
 """
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.output_parsers import PydanticOutputParser
-from api.src.models import QuestionRouter
-from api.src.prompts import RouterPrompt
+
+from api.src.models import QuestionRouter, TDD
+from api.src.prompts import RouterPrompt, TDDGeneratorPrompt
 import os
 
 # Initialize Gemini
@@ -28,3 +28,14 @@ def get_router_chain():
     router_chain = RouterPrompt | structured_llm
     
     return router_chain
+
+def get_tdd_chain():
+    """
+    Builds and returns the LangChain Expression Language (LCEL) chain 
+    for the TDD generator.
+    """
+    structured_llm = llm.with_structured_output(TDD)
+
+    tdd_chain = TDDGeneratorPrompt | structured_llm
+    
+    return tdd_chain
