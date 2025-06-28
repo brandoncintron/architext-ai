@@ -1,7 +1,12 @@
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import os
+from api.src.chains import get_router_chain
 
 app = FastAPI()
 
@@ -31,15 +36,21 @@ def hello_world():
 
 @app.post("/api/generate-plan")
 async def generate_plan(payload: IdeaPayload):
-    # Placeholder for LangChain logic
-    print(f"Received idea: {payload.idea}")
-    print(f"Received platform: {payload.platform}")
+    print(f"Received Idea: {payload.idea}")
     
-    # Here is where we will:
-    # 1. Initialize the ChatGoogleGenerativeAI model.
-    # 2. Define an output parser (e.g., PydanticOutputParser).
-    # 3. Create a PromptTemplate.
-    # 4. Build and invoke the LangChain chain.
-    # 5. Return the structured output.
+    router_chain = get_router_chain()
+    
+    # Invoke the chain with the user's idea.
+    # The result will be a Pydantic QuestionRouter object.
+    result = await router_chain.ainvoke({"user_idea": payload.idea})
+    
+    print("\nAI-generated questions:")
+    for question in result.questions:
+        print(f"- {question.question}")
 
-    return {"status": "success", "plan": "This is a placeholder plan."}
+    # For now, return a placeholder.
+    # In the next step, this will return the first question to the frontend.
+    return {
+        "status": "success", 
+        "questions": [q.dict() for q in result.questions]
+    }
