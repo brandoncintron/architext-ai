@@ -13,6 +13,7 @@ import { Check, Clipboard } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface ResultsStepProps {
   tdd: string;
@@ -24,6 +25,7 @@ export const ResultsStep = ({ tdd }: ResultsStepProps) => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(tdd);
     setHasCopied(true);
+    toast.success("✅ TDD copied to clipboard!");
     setTimeout(() => {
       setHasCopied(false);
     }, 2000);
