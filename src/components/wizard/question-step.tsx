@@ -9,26 +9,27 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 
 interface QuestionStepProps {
   question: string;
-  description: string;
   options: string[];
+  selection: string | null;
+  onSelectionChange: (option: string) => void;
 }
 
 export const QuestionStep = ({
   question,
-  description,
   options,
+  selection,
+  onSelectionChange,
 }: QuestionStepProps) => {
-  const [selection, setSelection] = useState<string | null>(null);
-
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">{question}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <CardDescription>
+          Your choice will help tailor the final architectural plan.
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-wrap gap-2">
@@ -36,7 +37,7 @@ export const QuestionStep = ({
             <Button
               key={option}
               variant={selection === option ? "default" : "outline"}
-              onClick={() => setSelection(option)}
+              onClick={() => onSelectionChange(option)}
             >
               {option}
             </Button>
