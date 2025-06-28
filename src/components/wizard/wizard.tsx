@@ -20,11 +20,15 @@ interface Question {
 export const Wizard = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [initialFormValues, setInitialFormValues] = useState<LandingPageFormValues | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<string[]>([]);
+  const [finalClarification, setFinalClarification] = useState("");
+  const [generatedTDD, setGeneratedTDD] = useState("");
 
   const handleInitialSubmit = async (values: LandingPageFormValues) => {
     setIsLoading(true);
+    setInitialFormValues(values);
     try {
       const response = await fetch("/api/generate-plan", {
         method: "POST",
@@ -54,6 +58,36 @@ export const Wizard = () => {
     setAnswers(newAnswers);
   };
 
+  const handleGenerateTDD = async () => {
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch("/api/generate-tdd", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          initialFormValues,
+          questions,
+          answers,
+          finalClarification,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate TDD.");
+      }
+
+      const data = await response.json();
+      setGeneratedTDD(data.tdd);
+      goToNextStep();
+    } catch (error) {
+      console.error(error);
+      // TODO: Add user-facing error handling
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const steps = [
     {
       name: "Initial Idea",
@@ -72,11 +106,16 @@ export const Wizard = () => {
     })),
     { 
       name: "Final Clarification",
-      component: <FinalClarificationStep />
+      component: (
+        <FinalClarificationStep
+          value={finalClarification}
+          onChange={setFinalClarification}
+        />
+      ),
     },
     { 
       name: "Results",
-      component: <ResultsStep />
+      component: <ResultsStep tdd={generatedTDD} />
     },
   ];
 
@@ -91,6 +130,9 @@ export const Wizard = () => {
   const CurrentComponent = steps[currentStep].component;
   const isLastStep = currentStep === steps.length - 1;
   const isFirstStep = currentStep === 0;
+  const isFinalClarificationStep =
+    currentStep === steps.findIndex((s) => s.name === "Final Clarification");
+  const isGenerating = isFinalClarificationStep && isLoading;
 
   return (
     <div className="relative flex w-full flex-col items-center justify-center">
@@ -120,8 +162,12 @@ export const Wizard = () => {
         </div>
       </div>
 
-      <div className="flex w-full min-h-[520px] max-w-2xl items-center justify-center pt-24">
-        {isLoading && currentStep === 0 ? <Loader2 className="h-8 w-8 animate-spin" /> : CurrentComponent}
+      <div className="flex w-full min-h-[520px] max-w-4xl items-center justify-center pt-24">
+        {isLoading && currentStep === 0 ? (
+          <Loader2 className="h-8 w-8 animate-spin" />
+        ) : (
+          CurrentComponent
+        )}
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 z-10 bg-background/80 p-4 backdrop-blur-sm">
@@ -136,11 +182,16 @@ export const Wizard = () => {
           </Button>
           <Button
             variant="default"
-            onClick={goToNextStep}
-            disabled={isLastStep || currentStep > 0 && !answers[currentStep - 1]}
+            onClick={isFinalClarificationStep ? handleGenerateTDD : goToNextStep}
+            disabled={
+              isGenerating || isLastStep || (currentStep > 0 && !answers[currentStep - 1] && !isFinalClarificationStep)
+            }
           >
-            Next
-            <ArrowRight className="ml-2 h-4 w-4" />
+            {isGenerating ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : null}
+            {isFinalClarificationStep ? "Generate TDD" : "Next"}
+            {!isGenerating && <ArrowRight className="ml-2 h-4 w-4" />}
           </Button>
         </div>
       </div>
