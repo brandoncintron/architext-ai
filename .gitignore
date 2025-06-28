@@ -50,3 +50,4 @@ DD.txt
 
 # python
 __pycache__/
+/pycache/*
