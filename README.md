@@ -37,12 +37,26 @@ cd architext-ai
 
 This project uses both npm for the frontend and pip for the Python backend.
 
+You'll need to create a python venv directory first. 
+
+```bash
+# Create the environment
+python3 -m venv venv
+
+# Activate the environment
+source venv/bin/activate
+```
+
+Once the venv directory is created, your command line should be prefixed with (venv). Install the python dependencies:
+```bash
+# Install backend dependencies
+pip install -r api/requirements.txt
+```
+
+Then open a terminal in the architext-ai/ root, and run:
 ```bash
 # Install frontend dependencies
 npm install
-
-# Install backend dependencies
-pip install -r api/requirements.txt
 ```
 
 ### 3. Set up environment variables
