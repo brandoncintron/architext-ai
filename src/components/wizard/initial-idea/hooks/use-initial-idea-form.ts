@@ -20,7 +20,8 @@ export const useInitialIdeaForm = ({
     defaultValues: {
       idea: "",
     },
-    mode: "onChange",
+    mode: "onSubmit",
+    reValidateMode: "onChange",
   });
 
   return { form, onSubmit };
