@@ -28,7 +28,7 @@ const openSans = Open_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Architext AI - Your AI Product Manager",
+  title: "Architext AI",
   description:
     "Transform your idea into a developer-ready project plan with Architext AI.",
 };
