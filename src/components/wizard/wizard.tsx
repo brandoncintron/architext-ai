@@ -4,13 +4,13 @@
 "use client";
 
 import { useState } from "react";
-import { LandingPageForm } from "@/components/landing-page/landing-page-form";
+import { InitialIdeaStep } from "./initial-idea/initial-idea-step";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Loader2, RotateCcw } from "lucide-react";
 import { QuestionStep } from "./question-step";
 import { FinalClarificationStep } from "./final-clarification-step";
 import { ResultsStep } from "./results-step";
-import { LandingPageFormValues } from "../landing-page/utils/schema";
+import { InitialIdeaFormValues } from "./initial-idea/utils/schema";
 import { GoogleGeminiLogo } from "../ui/google-gemini-logo";
 
 interface Question {
@@ -21,13 +21,14 @@ interface Question {
 export const Wizard = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [initialFormValues, setInitialFormValues] = useState<LandingPageFormValues | null>(null);
+  const [initialFormValues, setInitialFormValues] =
+    useState<InitialIdeaFormValues | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<string[]>([]);
   const [finalClarification, setFinalClarification] = useState("");
   const [generatedTDD, setGeneratedTDD] = useState("");
 
-  const handleInitialSubmit = async (values: LandingPageFormValues) => {
+  const handleInitialSubmit = async (values: InitialIdeaFormValues) => {
     setIsLoading(true);
     setInitialFormValues(values);
     try {
@@ -102,7 +103,12 @@ export const Wizard = () => {
   const steps = [
     {
       name: "Initial Idea",
-      component: <LandingPageForm onSubmit={handleInitialSubmit} isSubmitting={isLoading} />,
+      component: (
+        <InitialIdeaStep
+          onSubmit={handleInitialSubmit}
+          isSubmitting={isLoading}
+        />
+      ),
     },
     ...questions.map((q, index) => ({
       name: `Question ${index + 1}`,

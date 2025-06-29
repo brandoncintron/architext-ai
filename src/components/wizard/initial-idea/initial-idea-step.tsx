@@ -1,5 +1,5 @@
 /**
- * @file Renders the main content for the landing page, including the project idea form.
+ * @file Renders the initial step of the wizard, where the user inputs their project idea.
  */
 "use client";
 
@@ -21,18 +21,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { useLandingPageForm } from "./hooks/use-landing-page-form";
-import { LandingPageFormValues } from "./utils/schema";
+import { useInitialIdeaForm } from "./hooks/use-initial-idea-form";
+import { InitialIdeaFormValues } from "./utils/schema";
 
 const platforms = ["Web App", "Mobile App", "Desktop App"] as const;
 
-interface LandingPageFormProps {
-  onSubmit: (values: LandingPageFormValues) => void;
+interface InitialIdeaStepProps {
+  onSubmit: (values: InitialIdeaFormValues) => void;
   isSubmitting: boolean;
 }
 
-export const LandingPageForm = ({ onSubmit, isSubmitting }: LandingPageFormProps) => {
-  const { form } = useLandingPageForm({ onSubmit });
+export const InitialIdeaStep = ({
+  onSubmit,
+  isSubmitting,
+}: InitialIdeaStepProps) => {
+  const { form } = useInitialIdeaForm({ onSubmit });
 
   return (
     <Card className="w-full max-w-2xl">
