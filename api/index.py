@@ -41,6 +41,10 @@ class TDDGenerationPayload(BaseModel):
 def hello_world():
     return {"message": "Hello World"}
 
+@app.get("/api/python")
+def hello_world():
+    return {"message": "Hello World123"}
+
 @app.post("/api/generate-plan")
 async def generate_plan(payload: IdeaPayload):
     print(f"Received Idea: {payload.idea}")
