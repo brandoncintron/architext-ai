@@ -37,20 +37,24 @@ export const InitialIdeaStep = ({
 }: InitialIdeaStepProps) => {
   const { form } = useInitialIdeaForm({ onSubmit });
 
-  return (
-    <Card className="w-full max-w-2xl">
+  return ( 
+    <Card className="w-full max-w-2xl h-full">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">
           Welcome to Architext AI
         </CardTitle>
         <CardDescription>
-          Input your project idea, and architext will help you build a fully-detailed technical design document
-          suited to your needs.
+          Input your project idea, and architext will help you build a
+          fully-detailed technical design document suited to your needs.
         </CardDescription>
       </CardHeader>
+
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <CardContent className="space-y-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6 flex flex-col flex-grow"
+        >
+          <CardContent className="space-y-6 flex-grow">
             <FormField
               control={form.control}
               name="idea"
@@ -96,7 +100,7 @@ export const InitialIdeaStep = ({
               )}
             />
           </CardContent>
-          <CardFooter className="flex justify-end">
+          <CardFooter className="flex justify-end mt-auto">
             <Button type="submit" size="lg" disabled={isSubmitting}>
               {isSubmitting ? "Generating..." : "Start Building"}
             </Button>
