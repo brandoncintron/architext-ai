@@ -30,10 +30,10 @@ export const FinalClarificationStep = ({ value, onChange }: FinalClarificationSt
       <CardContent className="flex-grow flex flex-col">
         <div className="grid w-full gap-1.5 flex-grow">
           <Label htmlFor="clarifications">
-            Your final thoughts:
+            Your final clarifications:
           </Label>
           <Textarea
-            placeholder="e.g., Please prioritize open-source technologies and ensure the database is GDPR compliant."
+            placeholder="e.g., Prioritize using AWS services over other cloud providers."
             id="clarifications"
             rows={5}
             value={value}
