@@ -31,6 +31,7 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
+/venv
 .env*
 .env*.local
 .env
@@ -43,6 +44,10 @@ yarn-error.log*
 next-env.d.ts
 
 # project docs
-PRD.txt
+PRD.md
 DD.txt
 /.cursor/
+
+# python
+__pycache__/
+/pycache/*
