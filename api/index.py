@@ -37,7 +37,7 @@ class TDDGenerationPayload(BaseModel):
     answers: List[str]
     finalClarification: str
 
-@app.get("/api/python")
+@app.get("/api")
 def hello_world():
     return {"message": "Hello World"}
 
