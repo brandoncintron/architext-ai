@@ -147,6 +147,7 @@ export const Wizard = () => {
 
   return (
     <div className="relative flex w-full flex-col items-center justify-center">
+      <div className="absolute left-80 -z-10 h-114 w-128 rounded-full bg-blue-500/40 blur-3xl" />
       {!isFirstStep && (
         <div className="absolute inset-x-0 top-0 flex justify-center pt-4">
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
