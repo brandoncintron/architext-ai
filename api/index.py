@@ -30,3 +30,7 @@ app.add_middleware(
 
 app.include_router(plan_router, prefix="/api")
 app.include_router(tdd_router, prefix="/api")
+
+@app.get("/api")
+async def health():
+    return {"status": "ok"}
