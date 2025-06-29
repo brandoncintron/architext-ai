@@ -2,7 +2,6 @@
  * @file This component renders the final clarification step in the wizard.
  */
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -18,7 +17,7 @@ interface FinalClarificationStepProps {
 
 export const FinalClarificationStep = ({ value, onChange }: FinalClarificationStepProps) => {
   return (
-    <Card className="w-full max-w-2xl">
+    <>
       <CardHeader>
         <CardTitle className="text-2xl font-bold">
           Final Clarifications
@@ -28,8 +27,8 @@ export const FinalClarificationStep = ({ value, onChange }: FinalClarificationSt
           preferences, or context for the AI.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="grid w-full gap-1.5">
+      <CardContent className="flex-grow flex flex-col">
+        <div className="grid w-full gap-1.5 flex-grow">
           <Label htmlFor="clarifications">
             Your final thoughts:
           </Label>
@@ -39,9 +38,10 @@ export const FinalClarificationStep = ({ value, onChange }: FinalClarificationSt
             rows={5}
             value={value}
             onChange={(e) => onChange(e.target.value)}
+            className="flex-grow"
           />
         </div>
       </CardContent>
-    </Card>
+    </>
   );
 }; 

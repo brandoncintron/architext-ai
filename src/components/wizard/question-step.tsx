@@ -2,7 +2,6 @@
  * @file This component renders a single question step in the wizard.
  */
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -24,7 +23,7 @@ export const QuestionStep = ({
   onSelectionChange,
 }: QuestionStepProps) => {
   return (
-    <Card className="w-full max-w-2xl">
+    <>
       <CardHeader>
         <CardTitle className="text-2xl font-bold">{question}</CardTitle>
         <CardDescription>
@@ -44,6 +43,6 @@ export const QuestionStep = ({
           ))}
         </div>
       </CardContent>
-    </Card>
+    </>
   );
 }; 
