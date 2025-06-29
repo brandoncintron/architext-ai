@@ -84,8 +84,7 @@ export const Wizard = () => {
   const CurrentComponent = steps[currentStep].component;
 
   return (
-    <div className="relative flex w-full flex-col items-center justify-center">
-      <div className="absolute left-80 -z-10 h-114 w-128 rounded-full bg-blue-500/40 blur-3xl" />
+    <div className="flex w-full flex-col items-center justify-center">
 
       <div>
         <ErrorAlert error={error || ""} />
@@ -121,7 +120,9 @@ export const Wizard = () => {
         </div>
       )}
 
-      <div className="flex w-full min-h-[420px] max-w-4xl items-center justify-center p-4 ">
+      <div className="flex w-full min-h-[420px] max-w-4xl items-center justify-center p-4 relative">
+      <div className="absolute left-20 -z-10 h-114 w-128 rounded-full bg-blue-500/40 blur-3xl" />
+      
         {(isLoading && isFirstStep) || isGenerating ? (
           <div className="flex flex-col items-center gap-4 text-center">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -138,6 +139,7 @@ export const Wizard = () => {
           CurrentComponent
         ) : (
           <Card className="w-full max-w-2xl flex flex-col">
+            
             {CurrentComponent}
             <CardFooter className="flex justify-between mt-auto">
               <Button
