@@ -49,6 +49,8 @@ DD.txt
 /.cursor/
 
 # python
+/api/__pycache__/
 __pycache__/
 /pycache/*
 *.pyc
+*.cpython
