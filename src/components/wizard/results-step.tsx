@@ -5,11 +5,12 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Check, Clipboard } from "lucide-react";
+import { Check, Clipboard, RotateCcw } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useState } from "react";
@@ -17,15 +18,16 @@ import { toast } from "sonner";
 
 interface ResultsStepProps {
   tdd: string;
+  onStartOver: () => void;
 }
 
-export const ResultsStep = ({ tdd }: ResultsStepProps) => {
+export const ResultsStep = ({ tdd, onStartOver }: ResultsStepProps) => {
   const [hasCopied, setHasCopied] = useState(false);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(tdd);
     setHasCopied(true);
-    toast.success("✅ TDD copied to clipboard!");
+    toast.success("TDD copied to clipboard!");
     setTimeout(() => {
       setHasCopied(false);
     }, 2000);
@@ -52,9 +54,15 @@ export const ResultsStep = ({ tdd }: ResultsStepProps) => {
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="prose prose-sm dark:prose-invert max-w-none">
+      <CardContent className="prose prose-sm dark:prose-invert max-w-none overflow-y-auto flex-grow">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{tdd}</ReactMarkdown>
       </CardContent>
+      <CardFooter className="flex justify-center mt-auto">
+        <Button variant="default" onClick={onStartOver}>
+          <RotateCcw className="mr-2 h-4 w-4" />
+          Start Over
+        </Button>
+      </CardFooter>
     </Card>
   );
 }; 
