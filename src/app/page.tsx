@@ -6,9 +6,11 @@ import { ModeToggle } from "@/components/ui/darkmode-toggle";
 import { Button } from "@/components/ui/button";
 import { Github } from "lucide-react";
 
+
 const HomePage = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center md:p-24">
+    <main className="flex min-h-screen flex-col items-center justify-center md:px-24">
+
       <Wizard />
       <div className="absolute right-8 top-6 flex items-center space-x-8">
         <Button
