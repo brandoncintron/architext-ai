@@ -41,7 +41,7 @@ export const LandingPageForm = ({ onSubmit, isSubmitting }: LandingPageFormProps
           Welcome to Architext AI
         </CardTitle>
         <CardDescription>
-          Input your project idea, and architext will help you build a plan
+          Input your project idea, and architext will help you build a fully-detailed technical design document
           suited to your needs.
         </CardDescription>
       </CardHeader>

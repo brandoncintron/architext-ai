@@ -8,10 +8,9 @@ from api.src.prompts import RouterPrompt, TDDGeneratorPrompt
 import os
 
 # Initialize Gemini
-# The API key is loaded from the .env file in api/index.py
-# and passed directly to the constructor.
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.0-flash",
+    max_tokens=10000,
     google_api_key=os.environ.get("GOOGLE_API_KEY")
 )
 
@@ -20,8 +19,6 @@ def get_router_chain():
     Builds and returns the LangChain Expression Language (LCEL) chain 
     for the question router.
     """
-    # Instruct the model to use the Pydantic schema for its output.
-    # This is a powerful feature of newer Gemini models.
     structured_llm = llm.with_structured_output(QuestionRouter)
 
     # The final chain that pipes the prompt to the structured LLM.

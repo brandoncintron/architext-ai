@@ -15,7 +15,6 @@ origins = [
     "http://localhost:3000",
 ]
 
-# Add Vercel deployment URL in production
 if os.environ.get("VERCEL_URL"):
     origins.append(f"https://{os.environ.get('VERCEL_URL')}")
 

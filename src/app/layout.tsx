@@ -1,10 +1,3 @@
-/**
- * @file This file defines the root layout for the entire application.
- *
- * It sets up the basic HTML document structure, including the `<html>` and `<body>` tags,
- * loads global stylesheets, and applies fonts. The layout wraps around all other pages
- * and components, providing a consistent base for the user interface.
- */
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Open_Sans } from "next/font/google";
 import "./globals.css";
