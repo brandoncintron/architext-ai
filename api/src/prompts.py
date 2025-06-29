@@ -10,6 +10,7 @@ ROUTER_PROMPT_TEMPLATE = """
 <Context>
     A user will provide their high-level project idea. The user could be an indie hacker with limited architectural experience or a senior developer looking to prototype quickly. Your questions must be clear enough for both.
     <UserIdea>{user_idea}</UserIdea>
+    <Platform>{platform}</Platform>
 </Context>
 
 <Task>
@@ -32,7 +33,7 @@ ROUTER_PROMPT_TEMPLATE = """
     </ActionableOptions>
     <Examples>
       <GoodExample>
-        <Question>What is the most critical priority for the architecture?</Question>
+        <Question>What is the most critical priority for the architecture? (All others will still be considered.)</Question>
         <Options>
           <Option>Low Latency</Option>
           <Option>High Availability</Option>
@@ -56,6 +57,35 @@ ROUTER_PROMPT_TEMPLATE = """
 
 RouterPrompt = PromptTemplate.from_template(ROUTER_PROMPT_TEMPLATE)
 
+VALIDATOR_PROMPT_TEMPLATE = """
+<Persona>You are the gatekeeper for Architext AI, a system architect AI model. Your sole purpose is to determine if a user's input is a software project idea or a general-purpose question. You must be strict and accurate.</Persona>
+
+<Context>
+The user is trying to use an AI tool that generates technical design documents for software projects. The tool expects a description of a software application. It is not a general-purpose question-answering AI.
+
+<UserPrompt>
+{user_idea}
+</UserPrompt>
+</Context>
+
+<Task>
+Analyze the user's prompt and classify it. You must determine if the prompt is a plausible software project idea or if it's a question that is out of scope.
+
+- A **project idea** describes an application, a system, or a piece of software to be built.
+    - Examples: "An app for tracking my workouts", "A website that lets users book appointments with barbers", "A clone of instagram but for cats".
+- An **out-of-scope question** is a general knowledge question, a request for information that isn't about building a specific piece of software, or a command.
+    - Examples: "What is the capital of France?", "Who is the current president?", "Write me a poem", "How does a blockchain work?".
+</Task>
+
+<OutputFormat>
+Respond with a single, valid JSON object and nothing else.
+- If the prompt is a plausible software project idea, the JSON should be: `{{ "is_project_idea": true, "reason": "The user has provided a valid project idea." }}`
+- If the prompt is an out-of-scope question, the JSON should be: `{{ "is_project_idea": false, "reason": "This is a general question, not a software project idea. Please describe an application you want to build." }}`
+</OutputFormat>
+"""
+
+ValidatorPrompt = PromptTemplate.from_template(VALIDATOR_PROMPT_TEMPLATE)
+
 TDD_PROMPT_TEMPLATE = """
 <Persona>
 You are Architext AI, an expert-level system architect AI. Your role is to generate a comprehensive, developer-ready Technical Design Document (TDD) based on user-provided information. You must follow the provided structure precisely and use industry-standard best practices in your recommendations.
@@ -64,6 +94,7 @@ You are Architext AI, an expert-level system architect AI. Your role is to gener
 <Context>
 A user has provided the following details for their project:
 - **Initial Idea:** {user_idea}
+- **Application Type:** {platform}
 - **Clarifying Questions & Answers:** 
 {questions_and_answers}
 - **Final User Clarifications:** {final_clarification}
@@ -107,13 +138,14 @@ Respond with a single, valid JSON object and nothing else. The JSON object must 
 (Describe the overall architectural pattern, e.g., client-server, microservices, etc. Explain how the main components will interact.)
 
 ### 2.2. Technology Stack
-(Fill out a markdown table with recommendations for the Frontend, Backend, Database, AI Service (if applicable), and Deployment. Provide a clear rationale for each choice, referencing the user's priorities like scalability, security, or cost-effectiveness.)
+(Fill out a markdown table with specific and actionable recommendations for the Frontend, Backend, Database, AI Service (if applicable), and Deployment. For example, instead of "React", suggest "Next.js (React Framework)" or "React (Vite)". Provide a clear rationale for each choice, referencing the user's priorities like scalability, security, or cost-effectiveness.)
 
 | Layer      | Technology | Rationale |
 |------------|------------|-----------|
 | Frontend   |            |           |
 | Backend    |            |           |
 | Database   |            |           |
+| AI Service |            |           |
 | Deployment |            |           |
 
 ## 3. Data Model

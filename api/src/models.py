@@ -31,3 +31,16 @@ class TDD(BaseModel):
         ...,
         description="The complete TDD in Markdown format, following the standardized structure."
     )
+
+class ProjectIdeaValidator(BaseModel):
+    """
+    Validates whether the user's input is a software project idea or a general question.
+    """
+    is_project_idea: bool = Field(
+        ...,
+        description="True if the input is a plausible software project idea, False otherwise."
+    )
+    reason: str = Field(
+        ...,
+        description="A brief explanation for the classification, especially if it's not a project idea."
+    )
