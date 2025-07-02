@@ -11,13 +11,14 @@ class IdeaPayload(BaseModel):
     platform: str
 
 
-@router.post("/generate-plan")
+@router.post("/generate_plan")
 async def generate_plan(payload: IdeaPayload):
     print(f"Received Idea: {payload.idea}")
+    print(f"Received Platform: {payload.platform}")
 
     # Step 1: Validate the user's input
     validator_chain = get_validator_chain()
-    validation_result = await validator_chain.ainvoke({"user_idea": payload.idea})
+    validation_result = await validator_chain.ainvoke({"user_idea": payload.idea, "platform": payload.platform})
 
     if not validation_result.is_project_idea:
         print(f"Validation failed: {validation_result.reason}")

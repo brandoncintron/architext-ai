@@ -35,7 +35,7 @@ export const useWizard = () => {
     setError(null);
     setInitialFormValues(values);
     try {
-      const response = await fetch("/api/generate-plan", {
+      const response = await fetch("/api/generate_plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
@@ -72,7 +72,7 @@ export const useWizard = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/generate-tdd", {
+      const response = await fetch("/api/generate_tdd", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

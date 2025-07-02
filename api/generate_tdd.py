@@ -13,7 +13,7 @@ class TDDGenerationPayload(BaseModel):
     finalClarification: str
 
 
-@router.post("/generate-tdd")
+@router.post("/generate_tdd")
 async def generate_tdd(payload: TDDGenerationPayload):
     print("Received payload for TDD generation")
 
