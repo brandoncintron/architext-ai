@@ -19,6 +19,7 @@ export const useInitialIdeaForm = ({
     resolver: zodResolver(initialIdeaFormSchema),
     defaultValues: {
       idea: "",
+      platform: undefined,
     },
     mode: "onSubmit",
     reValidateMode: "onChange",
