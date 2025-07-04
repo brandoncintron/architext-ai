@@ -34,9 +34,9 @@ export const ResultsStep = ({ tdd, onStartOver }: ResultsStepProps) => {
   };
 
   return (
-    <Card className="w-full max-w-4xl">
+    <Card className="w-full max-w-4xl my-6">
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex items-start md:items-center justify-between">
           <div>
             <CardTitle className="text-2xl font-bold">
               Your Technical Design Document is Ready
@@ -65,4 +65,4 @@ export const ResultsStep = ({ tdd, onStartOver }: ResultsStepProps) => {
       </CardFooter>
     </Card>
   );
-}; 
+};

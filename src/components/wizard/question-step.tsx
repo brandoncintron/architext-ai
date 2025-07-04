@@ -25,18 +25,19 @@ export const QuestionStep = ({
   return (
     <>
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">{question}</CardTitle>
+        <CardTitle className="text-2xl font-bold break-words">{question}</CardTitle>
         <CardDescription>
           Your choice will help tailor the final architectural plan.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
           {options.map((option) => (
             <Button
               key={option}
               variant={selection === option ? "default" : "outline"}
               onClick={() => onSelectionChange(option)}
+              className="h-auto whitespace-normal sm:h-10 sm:whitespace-nowrap"
             >
               {option}
             </Button>

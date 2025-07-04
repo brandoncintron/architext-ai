@@ -92,10 +92,10 @@ export const Wizard = () => {
 
       {/* Step indicator */}
       {!isFirstStep && (
-        <div className="flex justify-center pt-12">
-          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+        <div className="flex justify-center pt-12 mt-14 md:mt-0">
+          <div className="flex items-center space-x-2 text-sm text-muted-foreground sm:space-x-2">
             {steps.map((step, index) => (
-              <div key={step.name} className="flex items-center space-x-2">
+              <div key={step.name} className="flex items-center sm:space-x-2">
                 <div
                   className={`flex h-6 w-6 items-center justify-center rounded-full ${
                     currentStep > index
@@ -112,7 +112,7 @@ export const Wizard = () => {
                   )}
                 </div>
                 {index < steps.length - 1 && (
-                  <div className="h-px w-12 bg-muted" />
+                  <div className="h-px w-4 bg-muted sm:w-12" />
                 )}
               </div>
             ))}
@@ -121,7 +121,7 @@ export const Wizard = () => {
       )}
 
       <div className="flex w-full min-h-[420px] max-w-4xl items-center justify-center p-4 relative">
-      <div className="absolute left-20 -z-10 h-114 w-128 rounded-full bg-blue-500/40 blur-3xl" />
+      <div className="absolute left-[-5rem] -z-10 h-[28.5rem] w-128 rounded-full bg-blue-500/40 blur-3xl lg:left-[5rem]" />
       
         {(isLoading && isFirstStep) || isGenerating ? (
           <div className="flex flex-col items-center gap-4 text-center">
