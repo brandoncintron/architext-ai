@@ -5,22 +5,15 @@
 
 import { InitialIdeaStep } from "./initial-idea/initial-idea-step";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Loader2,
-  Check,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Check } from "lucide-react";
 import { QuestionStep } from "./question-step";
 import { FinalClarificationStep } from "./final-clarification-step";
 import { ResultsStep } from "./results-step";
 import { GoogleGeminiLogo } from "../ui/google-gemini-logo";
-import {
-  Card,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardFooter } from "@/components/ui/card";
 import { useWizard } from "./hooks/use-wizard";
 import ErrorAlert from "../ui/error-alert";
+import { ProgressBar } from "./progress-bar";
 
 export const Wizard = () => {
   const {
@@ -77,7 +70,9 @@ export const Wizard = () => {
     },
     {
       name: "Results",
-      component: <ResultsStep tdd={generatedTDD} onStartOver={handleStartOver} />,
+      component: (
+        <ResultsStep tdd={generatedTDD} onStartOver={handleStartOver} />
+      ),
     },
   ];
 
@@ -85,50 +80,19 @@ export const Wizard = () => {
 
   return (
     <div className="flex w-full flex-col items-center justify-center">
-
       <div>
         <ErrorAlert error={error || ""} />
       </div>
 
-      {/* Step indicator */}
-      {!isFirstStep && (
-        <div className="flex justify-center pt-12 mt-14 md:mt-0">
-          <div className="flex items-center space-x-2 text-sm text-muted-foreground sm:space-x-2">
-            {steps.map((step, index) => (
-              <div key={step.name} className="flex items-center sm:space-x-2">
-                <div
-                  className={`flex h-6 w-6 items-center justify-center rounded-full ${
-                    currentStep > index
-                      ? "bg-primary text-primary-foreground"
-                      : currentStep === index
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
-                  }`}
-                >
-                  {currentStep > index ? (
-                    <Check className="h-4 w-4" />
-                  ) : (
-                    index + 1
-                  )}
-                </div>
-                {index < steps.length - 1 && (
-                  <div className="h-px w-4 bg-muted sm:w-12" />
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <div className="flex w-full min-h-[420px] max-w-4xl justify-center items-center p-4 relative">
+        <div className="absolute left-[-5rem] -z-10 h-[28.5rem] w-128 rounded-full bg-blue-500/40 blur-3xl lg:left-[5rem]" />
 
-      <div className="flex w-full min-h-[420px] max-w-4xl items-center justify-center p-4 relative">
-      <div className="absolute left-[-5rem] -z-10 h-[28.5rem] w-128 rounded-full bg-blue-500/40 blur-3xl lg:left-[5rem]" />
-      
         {(isLoading && isFirstStep) || isGenerating ? (
           <div className="flex flex-col items-center gap-4 text-center">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
             {isGenerating ? (
               <div className="font-sans flex flex-col gap-4 items-center">
-                <p>The AI is generating your TDD, please wait...</p>
+                <p>Generating your TDD, please wait...</p>
                 <GoogleGeminiLogo />
               </div>
             ) : (
@@ -139,7 +103,9 @@ export const Wizard = () => {
           CurrentComponent
         ) : (
           <Card className="w-full max-w-2xl flex flex-col">
-            
+            {!isFirstStep && (
+              <ProgressBar steps={steps} currentStep={currentStep} />
+            )}
             {CurrentComponent}
             <CardFooter className="flex justify-between mt-auto">
               <Button
@@ -175,4 +141,4 @@ export const Wizard = () => {
       </div>
     </div>
   );
-}; 
+};
