@@ -3,17 +3,18 @@
  */
 "use client";
 
-import { InitialIdeaStep } from "./initial-idea/initial-idea-step";
+import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Loader2, Check } from "lucide-react";
-import { QuestionStep } from "./question-step";
-import { FinalClarificationStep } from "./final-clarification-step";
-import { ResultsStep } from "./results-step";
-import { GoogleGeminiLogo } from "../ui/google-gemini-logo";
 import { Card, CardFooter } from "@/components/ui/card";
-import { useWizard } from "./hooks/use-wizard";
-import ErrorAlert from "../ui/error-alert";
-import { ProgressBar } from "./progress-bar";
+import ErrorAlert from "@/components/ui/error-alert";
+import { GoogleGeminiLogo } from "@/components/ui/google-gemini-logo";
+import { FinalClarificationStep } from "@/components/wizard/final-clarification-step";
+import { useWizard } from "@/components/wizard/hooks/use-wizard";
+import { InitialIdeaStep } from "@/components/wizard/initial-idea/initial-idea-step";
+import { ProgressBar } from "@/components/wizard/progress-bar";
+import { QuestionStep } from "@/components/wizard/question-step";
+import { ResultsStep } from "@/components/wizard/results/results-step";
 
 export const Wizard = () => {
   const {
@@ -79,13 +80,13 @@ export const Wizard = () => {
   const CurrentComponent = steps[currentStep].component;
 
   return (
-    <div className="flex w-full flex-col items-center justify-center">
+    <div className="flex md:w-full flex-col items-center justify-center">
       <div>
         <ErrorAlert error={error || ""} />
       </div>
 
-      <div className="flex w-full min-h-[420px] max-w-4xl justify-center items-center p-4 relative">
-        <div className="absolute left-[-5rem] -z-10 h-[28.5rem] w-128 rounded-full bg-blue-500/40 blur-3xl lg:left-[5rem]" />
+      <div className="flex md:w-full min-h-[400px] max-w-4xl justify-center items-center p-4 relative">
+        <div className="absolute left-[-8rem] -z-10 h-[28.5rem] w-128 rounded-full bg-blue-500/40 blur-3xl md:left-[5rem]" />
 
         {(isLoading && isFirstStep) || isGenerating ? (
           <div className="flex flex-col items-center gap-4 text-center">
