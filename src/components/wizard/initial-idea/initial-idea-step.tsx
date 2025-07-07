@@ -21,15 +21,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { useInitialIdeaForm } from "./hooks/use-initial-idea-form";
-import { InitialIdeaFormValues } from "./utils/schema";
+import { useInitialIdeaForm } from "@/components/wizard/initial-idea/hooks/use-initial-idea-form";
+import { InitialIdeaStepProps } from "@/components/wizard/types/types";
 
 const platforms = ["Web App", "Mobile App", "Desktop App"] as const;
-
-interface InitialIdeaStepProps {
-  onSubmit: (values: InitialIdeaFormValues) => void;
-  isSubmitting: boolean;
-}
 
 export const InitialIdeaStep = ({
   onSubmit,
@@ -37,7 +32,7 @@ export const InitialIdeaStep = ({
 }: InitialIdeaStepProps) => {
   const { form } = useInitialIdeaForm({ onSubmit });
 
-  return ( 
+  return (
     <Card className="w-full max-w-2xl h-full">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">
@@ -79,10 +74,11 @@ export const InitialIdeaStep = ({
                 <FormItem>
                   <FormLabel>What would the primary platform be?</FormLabel>
                   <FormControl>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex gap-2">
                       {platforms.map((p) => (
                         <Button
                           key={p}
+                          size={"sm"}
                           variant={field.value === p ? "default" : "outline"}
                           onClick={(e) => {
                             e.preventDefault();
