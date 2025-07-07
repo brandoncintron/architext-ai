@@ -23,14 +23,22 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useInitialIdeaForm } from "@/components/wizard/initial-idea/hooks/use-initial-idea-form";
 import { InitialIdeaStepProps } from "@/components/wizard/types/types";
-
-const platforms = ["Web App", "Mobile App", "Desktop App"] as const;
+import { useEffect, useState } from "react";
+import { platforms, placeholders } from "@/components/wizard/initial-idea/utils/constants";
 
 export const InitialIdeaStep = ({
   onSubmit,
   isSubmitting,
 }: InitialIdeaStepProps) => {
   const { form } = useInitialIdeaForm({ onSubmit });
+  const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <Card className="w-full max-w-2xl h-full">
@@ -57,11 +65,31 @@ export const InitialIdeaStep = ({
                 <FormItem>
                   <FormLabel>What&apos;s your project idea?</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="e.g., I want to build a resume-review app for students"
-                      {...field}
-                      rows={3}
-                    />
+                    <div className="relative">
+                      <Textarea placeholder=" " {...field} rows={3} />
+                      {!field.value && (
+                        <div
+                          className="absolute top-2 left-3 text-muted-foreground text-[15px] pointer-events-none w-[calc(100%-1.5rem)] h-5 overflow-hidden"
+                          aria-hidden="true"
+                        >
+                          {placeholders.map((text, index) => (
+                            <p
+                              key={text}
+                              className="absolute truncate w-full transition-all duration-500 ease-in-out"
+                              style={{
+                                transform: `translateY(${
+                                  (index - currentPlaceholderIndex) * 100
+                                }%)`,
+                                opacity:
+                                  index === currentPlaceholderIndex ? 1 : 0,
+                              }}
+                            >
+                              {text}
+                            </p>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
