@@ -1,6 +1,13 @@
 /**
  * @file This component renders the final results step, displaying the generated TDD.
  */
+"use client";
+
+import { Check, Clipboard, RotateCcw } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,29 +16,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Check, Clipboard, RotateCcw } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import { useState } from "react";
-import { toast } from "sonner";
-
-interface ResultsStepProps {
-  tdd: string;
-  onStartOver: () => void;
-}
+import { useCopyToClipboard } from "@/components/wizard/results/hooks/use-copyto-clipboard";
+import { ResultsStepProps } from "@/components/wizard/types/types";
 
 export const ResultsStep = ({ tdd, onStartOver }: ResultsStepProps) => {
-  const [hasCopied, setHasCopied] = useState(false);
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(tdd);
-    setHasCopied(true);
-    toast.success("TDD copied to clipboard!");
-    setTimeout(() => {
-      setHasCopied(false);
-    }, 2000);
-  };
+  const { hasCopied, copyToClipboard } = useCopyToClipboard();
 
   return (
     <Card className="w-full max-w-4xl my-6">
@@ -45,7 +34,11 @@ export const ResultsStep = ({ tdd, onStartOver }: ResultsStepProps) => {
               Review the generated TDD below. You can copy it to your clipboard.
             </CardDescription>
           </div>
-          <Button variant="outline" size="icon" onClick={copyToClipboard}>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => copyToClipboard(tdd)}
+          >
             {hasCopied ? (
               <Check className="h-4 w-4" />
             ) : (
