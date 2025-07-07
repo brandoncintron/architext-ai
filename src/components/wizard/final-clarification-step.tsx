@@ -1,21 +1,22 @@
 /**
  * @file This component renders the final clarification step in the wizard.
  */
+"use client";
+
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { FinalClarificationStepProps } from "@/components/wizard/types/types";
 
-interface FinalClarificationStepProps {
-  value: string;
-  onChange: (value: string) => void;
-}
-
-export const FinalClarificationStep = ({ value, onChange }: FinalClarificationStepProps) => {
+export const FinalClarificationStep = ({
+  value,
+  onChange,
+}: FinalClarificationStepProps) => {
   return (
     <>
       <CardHeader>
@@ -23,15 +24,13 @@ export const FinalClarificationStep = ({ value, onChange }: FinalClarificationSt
           Final Clarifications
         </CardTitle>
         <CardDescription>
-          Is there anything else you&apos;d like to add? Provide any final constraints,
-          preferences, or context for the AI.
+          Is there anything else you&apos;d like to add? Provide any final
+          constraints, preferences, or context for the AI.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-grow flex flex-col">
         <div className="grid w-full gap-1.5 flex-grow">
-          <Label htmlFor="clarifications">
-            Your final clarifications:
-          </Label>
+          <Label htmlFor="clarifications">Your final clarifications:</Label>
           <Textarea
             placeholder="e.g., Prioritize using AWS services over other cloud providers."
             id="clarifications"
@@ -44,4 +43,4 @@ export const FinalClarificationStep = ({ value, onChange }: FinalClarificationSt
       </CardContent>
     </>
   );
-}; 
+};

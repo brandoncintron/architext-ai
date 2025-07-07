@@ -1,16 +1,11 @@
 /**
  * @file This component renders the progress bar for the wizard.
  */
+"use client";
+
 import { Check } from "lucide-react";
 
-interface Step {
-  name: string;
-}
-
-interface ProgressBarProps {
-  steps: Step[];
-  currentStep: number;
-}
+import { ProgressBarProps } from "@/components/wizard/types/types";
 
 export const ProgressBar = ({ steps, currentStep }: ProgressBarProps) => {
   return (
@@ -23,8 +18,8 @@ export const ProgressBar = ({ steps, currentStep }: ProgressBarProps) => {
                 currentStep > index
                   ? "bg-primary text-primary-foreground"
                   : currentStep === index
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted"
               }`}
             >
               {currentStep > index ? <Check className="h-4 w-4" /> : index + 1}
@@ -37,4 +32,4 @@ export const ProgressBar = ({ steps, currentStep }: ProgressBarProps) => {
       </div>
     </div>
   );
-}; 
+};

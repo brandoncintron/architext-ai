@@ -1,15 +1,12 @@
-import { useState, useMemo } from "react";
-import { InitialIdeaFormValues } from "../initial-idea/utils/schema";
+import { useMemo, useState } from "react";
 
-interface Question {
-  question: string;
-  options: string[];
-}
+import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/schema";
+import { Question } from "@/components/wizard/types/types";
 
 export const useWizard = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null);
   const [initialFormValues, setInitialFormValues] =
     useState<InitialIdeaFormValues | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -17,10 +14,7 @@ export const useWizard = () => {
   const [finalClarification, setFinalClarification] = useState("");
   const [generatedTDD, setGeneratedTDD] = useState("");
 
-  const totalSteps = useMemo(
-    () => questions.length + 3,
-    [questions.length]
-  );
+  const totalSteps = useMemo(() => questions.length + 3, [questions.length]);
 
   const goToNextStep = () => {
     setCurrentStep((prev) => Math.min(prev + 1, totalSteps - 1));
@@ -55,7 +49,9 @@ export const useWizard = () => {
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError("An error occurred while generating questions. Please try again.");
+        setError(
+          "An error occurred while generating questions. Please try again.",
+        );
       }
     } finally {
       setIsLoading(false);

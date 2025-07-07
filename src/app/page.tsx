@@ -1,16 +1,15 @@
 /**
  * @file This file is the main entry point for the application's home page.
  */
-import { Wizard } from "@/components/wizard/wizard";
-import { ModeToggle } from "@/components/ui/darkmode-toggle";
-import { Button } from "@/components/ui/button";
 import { Github } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/ui/mode-toggle";
+import { Wizard } from "@/components/wizard/wizard";
 
 const HomePage = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center md:px-24 md:mt-0 mt-13">
-
+    <main className="flex min-h-screen flex-col items-center justify-center md:px-24">
       <Wizard />
       <div className="absolute right-8 top-6 flex items-center space-x-8">
         <Button

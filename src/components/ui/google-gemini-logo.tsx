@@ -13,4 +13,4 @@ export const GoogleGeminiLogo = () => {
       </div>
     </div>
   );
-}; 
+};

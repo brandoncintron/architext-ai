@@ -6,18 +6,18 @@ This project was built to solve a common problem for developers: the analysis pa
 
 ## Features
 
--   **Conversational AI Wizard:** A multi-step process that intelligently asks clarifying questions about the user's project idea.
--   **Dynamic Question Generation:** The AI analyzes the initial prompt to generate relevant questions about scale, performance, data models, and more.
--   **Technical Design Document (TDD) Generation:** Produces a complete, well-formatted TDD in Markdown.
--   **Copy to Clipboard:** Easily copy the generated TDD to use in other tools.
--   **Dark/Light Mode:** A sleek and responsive UI with theme support.
+- **Conversational AI Wizard:** A multi-step process that intelligently asks clarifying questions about the user's project idea.
+- **Dynamic Question Generation:** The AI analyzes the initial prompt to generate relevant questions about scale, performance, data models, and more.
+- **Technical Design Document (TDD) Generation:** Produces a complete, well-formatted TDD in Markdown.
+- **Copy to Clipboard:** Easily copy the generated TDD to use in other tools.
+- **Dark/Light Mode:** A sleek and responsive UI with theme support.
 
 ## Tech Stack
 
 This project is a full-stack application built with a modern tech stack:
 
--   **Frontend:** [Next.js](https://nextjs.org/) with [TypeScript](https://www.typescriptlang.org/), styled with [Tailwind CSS](https://tailwindcss.com/) and [shadcn/ui](https://ui.shadcn.com/).
--   **Backend:** [FastAPI](https://fastapi.tiangolo.com/) server running in a containerized [Python](https://www.python.org/) environment.
--   **AI Orchestration:** [LangChain](https://www.langchain.com/) to manage the conversational flow.
--   **LLM:** The [Google Gemini API](https://ai.google.dev/docs) powers the question and TDD generation.
--   **Deployment:** The application is containerized using [Docker](https://www.docker.com/) and deployed on [AWS App Runner](https://aws.amazon.com/app-runner/), with images stored in [AWS ECR](https://aws.amazon.com/ecr/).
+- **Frontend:** [Next.js](https://nextjs.org/) with [TypeScript](https://www.typescriptlang.org/), styled with [Tailwind CSS](https://tailwindcss.com/) and [shadcn/ui](https://ui.shadcn.com/).
+- **Backend:** [FastAPI](https://fastapi.tiangolo.com/) server running in a containerized [Python](https://www.python.org/) environment.
+- **AI Orchestration:** [LangChain](https://www.langchain.com/) to manage the conversational flow.
+- **LLM:** The [Google Gemini API](https://ai.google.dev/docs) powers the question and TDD generation.
+- **Deployment:** The application is containerized using [Docker](https://www.docker.com/) and deployed on [AWS App Runner](https://aws.amazon.com/app-runner/), with images stored in [AWS ECR](https://aws.amazon.com/ecr/).

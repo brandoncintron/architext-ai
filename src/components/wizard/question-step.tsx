@@ -1,20 +1,16 @@
 /**
  * @file This component renders a single question step in the wizard.
  */
+"use client";
+
+import { Button } from "@/components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-
-interface QuestionStepProps {
-  question: string;
-  options: string[];
-  selection: string | null;
-  onSelectionChange: (option: string) => void;
-}
+import { QuestionStepProps } from "@/components/wizard/types/types";
 
 export const QuestionStep = ({
   question,
@@ -25,7 +21,9 @@ export const QuestionStep = ({
   return (
     <>
       <CardHeader>
-        <CardTitle className="text-2xl font-bold break-words">{question}</CardTitle>
+        <CardTitle className="text-2xl font-bold break-words">
+          {question}
+        </CardTitle>
         <CardDescription>
           Your choice will help tailor the final architectural plan.
         </CardDescription>
@@ -46,4 +44,4 @@ export const QuestionStep = ({
       </CardContent>
     </>
   );
-}; 
+};

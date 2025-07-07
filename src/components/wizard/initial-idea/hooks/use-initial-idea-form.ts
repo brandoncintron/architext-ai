@@ -5,10 +5,11 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+
 import {
   initialIdeaFormSchema,
   InitialIdeaFormValues,
-} from "../utils/schema";
+} from "@/components/wizard/initial-idea/utils/schema";
 
 export const useInitialIdeaForm = ({
   onSubmit,
@@ -26,4 +27,4 @@ export const useInitialIdeaForm = ({
   });
 
   return { form, onSubmit };
-}; 
+};

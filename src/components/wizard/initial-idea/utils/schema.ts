@@ -12,4 +12,4 @@ export const initialIdeaFormSchema = z.object({
   }),
 });
 
-export type InitialIdeaFormValues = z.infer<typeof initialIdeaFormSchema>; 
+export type InitialIdeaFormValues = z.infer<typeof initialIdeaFormSchema>;
