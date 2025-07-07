@@ -10,7 +10,7 @@ import { ProgressBarProps } from "@/components/wizard/types/types";
 export const ProgressBar = ({ steps, currentStep }: ProgressBarProps) => {
   return (
     <div className="flex justify-center w-full px-4 ">
-      <div className="flex items-center space-x-1 text-sm text-muted-foreground sm:space-x-2">
+      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
         {steps.map((step, index) => (
           <div key={step.name} className="flex items-center sm:space-x-2">
             <div
