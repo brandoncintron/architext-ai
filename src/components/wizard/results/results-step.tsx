@@ -17,6 +17,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { useCopyToClipboard } from "@/components/wizard/results/hooks/use-copyto-clipboard";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { ResultsStepProps } from "@/components/wizard/types/types";
 
 const MarkdownEditor = dynamic(() => import("@uiw/react-markdown-editor"), {
@@ -35,6 +36,7 @@ const MarkdownPreview = dynamic(
 export const ResultsStep = ({ tdd, onStartOver }: ResultsStepProps) => {
   const [markdown, setMarkdown] = useState(tdd);
   const { hasCopied, copyToClipboard } = useCopyToClipboard();
+  const isMobile = useIsMobile();
 
   const largeTextTheme = EditorView.theme({
     "&": {
@@ -43,9 +45,9 @@ export const ResultsStep = ({ tdd, onStartOver }: ResultsStepProps) => {
   });
 
   return (
-    <div className="flex flex-col h-screen w-screen md:px-12 md:py-6">
-      <div className="flex justify-between items-center mb-4">
-        <div className="pr-4">
+    <div className="flex flex-col h-screen w-screen p-4 md:px-12 md:py-6">
+      <div className="mb-4 flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="md:pr-4">
           <h1 className="text-lg font-semibold">
             Technical Design Document Editor
           </h1>
@@ -54,7 +56,7 @@ export const ResultsStep = ({ tdd, onStartOver }: ResultsStepProps) => {
             to your clipboard.
           </p>
         </div>
-        <div className="flex items-center space-x-2 flex-shrink-0">
+        <div className="flex w-full flex-wrap items-center justify-center gap-2 space-x-2 md:w-auto md:flex-shrink-0 md:justify-start">
           <Button
             variant="outline"
             size="lg"
@@ -86,11 +88,8 @@ export const ResultsStep = ({ tdd, onStartOver }: ResultsStepProps) => {
           <Button onClick={onStartOver}>Start Over</Button>
         </div>
       </div>
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="flex-1 rounded-lg border"
-      >
-        <ResizablePanel defaultSize={50}>
+      {isMobile ? (
+        <div className="flex-1 rounded-lg border">
           <MarkdownEditor
             value={markdown}
             onChange={(value) => setMarkdown(value)}
@@ -98,15 +97,30 @@ export const ResultsStep = ({ tdd, onStartOver }: ResultsStepProps) => {
             className="h-full"
             extensions={[EditorView.lineWrapping, largeTextTheme]}
           />
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={50}>
-          <MarkdownPreview
-            source={markdown}
-            className="h-full overflow-y-auto p-8"
-          />
-        </ResizablePanel>
-      </ResizablePanelGroup>
+        </div>
+      ) : (
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="flex-1 rounded-lg border"
+        >
+          <ResizablePanel defaultSize={50}>
+            <MarkdownEditor
+              value={markdown}
+              onChange={(value) => setMarkdown(value)}
+              height="100%"
+              className="h-full"
+              extensions={[EditorView.lineWrapping, largeTextTheme]}
+            />
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={50}>
+            <MarkdownPreview
+              source={markdown}
+              className="h-full overflow-y-auto p-8"
+            />
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      )}
     </div>
   );
 };
