@@ -85,66 +85,66 @@ export const Wizard = () => {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center md:px-24">
-    <div className="flex md:w-full flex-col items-center justify-center">
-      <div>
-        <ErrorAlert error={error || ""} />
-      </div>
+      <div className="flex w-full flex-col items-center justify-center">
+        <div>
+          <ErrorAlert error={error || ""} />
+        </div>
 
-      <div className="flex md:w-full min-h-[400px] max-w-4xl justify-center items-center p-4 relative">
-        <div className="absolute left-[-8rem] -z-10 h-[28.5rem] w-128 rounded-full bg-blue-500/40 blur-3xl md:left-[5rem]" />
+        <div className="flex w-full min-h-[400px] max-w-4xl justify-center items-center p-4 relative">
+          <div className="absolute left-[-8rem] -z-10 h-[28.5rem] w-128 rounded-full bg-blue-500/40 blur-3xl md:left-[5rem]" />
 
-        {(isLoading && isFirstStep) || isGenerating ? (
-          <div className="flex flex-col items-center gap-4 text-center">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            {isGenerating ? (
-              <div className="font-sans flex flex-col gap-4 items-center">
-                <p>Generating your TDD, please wait...</p>
-                <GoogleGeminiLogo />
-              </div>
-            ) : (
-              <p className="text-muted-foreground">Analyzing your idea...</p>
-            )}
-          </div>
-        ) : isFirstStep ? (
-          CurrentComponent
-        ) : (
-          <Card className="w-full max-w-2xl flex flex-col">
-            {!isFirstStep && (
-              <ProgressBar steps={steps} currentStep={currentStep} />
-            )}
-            {CurrentComponent}
-            <CardFooter className="flex justify-between mt-auto">
-              <Button
-                variant="outline"
-                onClick={goToPreviousStep}
-                size="icon"
-                disabled={currentStep === 1}
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="default"
-                onClick={
-                  isFinalClarificationStep ? handleGenerateTDD : goToNextStep
-                }
-                disabled={
-                  (currentStep > 0 &&
-                    !answers[currentStep - 1] &&
-                    !isFinalClarificationStep)
-                }
-                size={isFinalClarificationStep ? "default" : "icon"}
-              >
-                {isFinalClarificationStep ? (
-                  "Generate TDD"
-                ) : (
-                  <ArrowRight className="h-4 w-4" />
-                )}
-              </Button>
-            </CardFooter>
-          </Card>
-        )}
+          {(isLoading && isFirstStep) || isGenerating ? (
+            <div className="flex flex-col items-center gap-4 text-center">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              {isGenerating ? (
+                <div className="font-sans flex flex-col gap-4 items-center">
+                  <p>Generating your TDD, please wait...</p>
+                  <GoogleGeminiLogo />
+                </div>
+              ) : (
+                <p className="text-muted-foreground">Analyzing your idea...</p>
+              )}
+            </div>
+          ) : isFirstStep ? (
+            CurrentComponent
+          ) : (
+            <Card className="w-full max-w-2xl flex flex-col">
+              {!isFirstStep && (
+                <ProgressBar steps={steps} currentStep={currentStep} />
+              )}
+              {CurrentComponent}
+              <CardFooter className="flex justify-between mt-auto">
+                <Button
+                  variant="outline"
+                  onClick={goToPreviousStep}
+                  size="icon"
+                  disabled={currentStep === 1}
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="default"
+                  onClick={
+                    isFinalClarificationStep ? handleGenerateTDD : goToNextStep
+                  }
+                  disabled={
+                    (currentStep > 0 &&
+                      !answers[currentStep - 1] &&
+                      !isFinalClarificationStep)
+                  }
+                  size={isFinalClarificationStep ? "default" : "icon"}
+                >
+                  {isFinalClarificationStep ? (
+                    "Generate TDD"
+                  ) : (
+                    <ArrowRight className="h-4 w-4" />
+                  )}
+                </Button>
+              </CardFooter>
+            </Card>
+          )}
+        </div>
       </div>
-    </div>
     </main>
   );
 };
