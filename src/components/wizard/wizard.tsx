@@ -79,7 +79,12 @@ export const Wizard = () => {
 
   const CurrentComponent = steps[currentStep].component;
 
+  if (isLastStep) {
+    return CurrentComponent;
+  }
+
   return (
+    <main className="flex min-h-screen flex-col items-center justify-center md:px-24">
     <div className="flex md:w-full flex-col items-center justify-center">
       <div>
         <ErrorAlert error={error || ""} />
@@ -100,7 +105,7 @@ export const Wizard = () => {
               <p className="text-muted-foreground">Analyzing your idea...</p>
             )}
           </div>
-        ) : isFirstStep || isLastStep ? (
+        ) : isFirstStep ? (
           CurrentComponent
         ) : (
           <Card className="w-full max-w-2xl flex flex-col">
@@ -125,8 +130,7 @@ export const Wizard = () => {
                 disabled={
                   (currentStep > 0 &&
                     !answers[currentStep - 1] &&
-                    !isFinalClarificationStep) ||
-                  isLastStep
+                    !isFinalClarificationStep)
                 }
                 size={isFinalClarificationStep ? "default" : "icon"}
               >
@@ -141,5 +145,6 @@ export const Wizard = () => {
         )}
       </div>
     </div>
+    </main>
   );
 };
