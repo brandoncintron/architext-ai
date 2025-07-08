@@ -9,8 +9,9 @@ import { Wizard } from "@/components/wizard/wizard";
 
 const HomePage = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center md:px-24">
+    <>
       <Wizard />
+      {/* 
       <div className="absolute right-8 top-6 flex items-center space-x-8">
         <Button
           variant="outline"
@@ -28,8 +29,8 @@ const HomePage = () => {
           </a>
         </Button>
         <ModeToggle />
-      </div>
-    </main>
+      </div>*/}
+    </>
   );
 };
 
