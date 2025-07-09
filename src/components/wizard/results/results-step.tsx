@@ -17,8 +17,8 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { useCopyToClipboard } from "@/components/wizard/results/hooks/use-copyto-clipboard";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { ResultsStepProps } from "@/components/wizard/types/types";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const MarkdownEditor = dynamic(() => import("@uiw/react-markdown-editor"), {
   ssr: false,
@@ -57,6 +57,7 @@ export const ResultsStep = ({ tdd, onStartOver }: ResultsStepProps) => {
           </p>
         </div>
         <div className="flex w-full flex-wrap items-center justify-center gap-2 space-x-2 md:w-auto md:flex-shrink-0 md:justify-start">
+          <Button onClick={onStartOver}>Start Over</Button>
           <Button
             variant="outline"
             size="lg"
@@ -85,7 +86,6 @@ export const ResultsStep = ({ tdd, onStartOver }: ResultsStepProps) => {
             </a>
           </Button>
           <ModeToggle />
-          <Button onClick={onStartOver}>Start Over</Button>
         </div>
       </div>
       {isMobile ? (
