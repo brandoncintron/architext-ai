@@ -55,7 +55,7 @@ export const InitialIdeaStep = ({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6 flex flex-col flex-grow"
+          className="space-y-6 md:space-y-0 flex flex-col flex-grow"
         >
           <CardContent className="space-y-6 flex-grow">
             <FormField
@@ -69,24 +69,26 @@ export const InitialIdeaStep = ({
                       <Textarea placeholder=" " {...field} rows={3} />
                       {!field.value && (
                         <div
-                          className="absolute top-2 left-3 text-muted-foreground text-[15px] pointer-events-none w-[calc(100%-1.5rem)] h-5 overflow-hidden"
+                          className="absolute top-2.5 left-3 text-muted-foreground text-sm pointer-events-none w-[calc(100%-1.5rem)]"
                           aria-hidden="true"
                         >
-                          {placeholders.map((text, index) => (
-                            <p
-                              key={text}
-                              className="absolute truncate w-full transition-all duration-500 ease-in-out"
-                              style={{
-                                transform: `translateY(${
-                                  (index - currentPlaceholderIndex) * 100
-                                }%)`,
-                                opacity:
-                                  index === currentPlaceholderIndex ? 1 : 0,
-                              }}
-                            >
-                              {text}
-                            </p>
-                          ))}
+                          <div className="relative h-10 overflow-hidden">
+                            {placeholders.map((text, index) => (
+                              <p
+                                key={text}
+                                className="absolute w-full transition-all duration-500 ease-in-out"
+                                style={{
+                                  transform: `translateY(${
+                                    (index - currentPlaceholderIndex) * 100
+                                  }%)`,
+                                  opacity:
+                                    index === currentPlaceholderIndex ? 1 : 0,
+                                }}
+                              >
+                                {text}
+                              </p>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
