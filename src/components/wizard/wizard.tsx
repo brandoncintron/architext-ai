@@ -10,11 +10,11 @@ import { Card, CardFooter } from "@/components/ui/card";
 import ErrorAlert from "@/components/ui/error-alert";
 import { GoogleGeminiLogo } from "@/components/ui/google-gemini-logo";
 import { FinalClarificationStep } from "@/components/wizard/final-clarification-step";
-import { useWizard } from "@/components/wizard/hooks/use-wizard";
 import { InitialIdeaStep } from "@/components/wizard/initial-idea/initial-idea-step";
 import { ProgressBar } from "@/components/wizard/progress-bar";
 import { QuestionStep } from "@/components/wizard/question-step";
 import { ResultsStep } from "@/components/wizard/results/results-step";
+import { useWizard } from "@/components/wizard/hooks/use-wizard";
 
 export const Wizard = () => {
   const {
@@ -79,15 +79,20 @@ export const Wizard = () => {
 
   const CurrentComponent = steps[currentStep].component;
 
+  if (isLastStep) {
+    return CurrentComponent;
+  }
+
   return (
-    <div className="flex md:w-full flex-col items-center justify-center">
-      <div>
+    <>
+    
+    <div className="flex w-full flex-col items-center p-4 md:p-0">
+      <div className="w-full max-w-2xl">
         <ErrorAlert error={error || ""} />
       </div>
 
-      <div className="flex md:w-full min-h-[400px] max-w-4xl justify-center items-center p-4 relative">
+      <div className="flex w-full min-h-[400px] max-w-4xl justify-center items-center relative">
         <div className="absolute left-[-8rem] -z-10 h-[28.5rem] w-128 rounded-full bg-blue-500/40 blur-3xl md:left-[5rem]" />
-
         {(isLoading && isFirstStep) || isGenerating ? (
           <div className="flex flex-col items-center gap-4 text-center">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -97,10 +102,10 @@ export const Wizard = () => {
                 <GoogleGeminiLogo />
               </div>
             ) : (
-              <p className="text-muted-foreground">Analyzing your idea...</p>
+              <p>Analyzing your idea...</p>
             )}
           </div>
-        ) : isFirstStep || isLastStep ? (
+        ) : isFirstStep ? (
           CurrentComponent
         ) : (
           <Card className="w-full max-w-2xl flex flex-col">
@@ -123,10 +128,9 @@ export const Wizard = () => {
                   isFinalClarificationStep ? handleGenerateTDD : goToNextStep
                 }
                 disabled={
-                  (currentStep > 0 &&
+                  currentStep > 0 &&
                     !answers[currentStep - 1] &&
-                    !isFinalClarificationStep) ||
-                  isLastStep
+                    !isFinalClarificationStep
                 }
                 size={isFinalClarificationStep ? "default" : "icon"}
               >
@@ -141,5 +145,6 @@ export const Wizard = () => {
         )}
       </div>
     </div>
+    </>
   );
-};
+}; 

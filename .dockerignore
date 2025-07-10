@@ -1,7 +1,12 @@
 Dockerfile
 .dockerignore
 node_modules
+.cursor
 .next
 .git
 venv
 .env
+test
+src/app/test
+api/__pycache__
+api/src/__pycache__
