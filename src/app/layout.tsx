@@ -37,7 +37,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${openSans.variable} antialiased bg-background text-foreground`}
       >
-        <main className="min-h-screen">
+        <main className="flex h-screen flex-col overflow-x-hidden">
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
