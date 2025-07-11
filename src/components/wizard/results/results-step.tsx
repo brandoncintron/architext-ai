@@ -27,6 +27,7 @@ import {
 import { useCopyToClipboard } from "@/components/wizard/results/hooks/use-copyto-clipboard";
 import { ResultsStepProps } from "@/components/wizard/types/types";
 import { useIsMobile } from "@/hooks/use-mobile";
+import type { Element } from 'hast';
 
 const MarkdownEditor = dynamic(() => import("@uiw/react-markdown-editor"), {
   ssr: false,
@@ -52,15 +53,13 @@ const largeTextTheme = EditorView.theme({
 const randomid = () => parseInt(String(Math.random() * 1e15), 10).toString(36);
 
 const Code = ({
-  inline,
   children = [],
   className,
   ...props
 }: {
-  inline?: boolean;
   children?: React.ReactNode;
   className?: string;
-  node?: any;
+  node?: Element;
 }) => {
   const demoid = useRef(`dome${randomid()}`);
   const [container, setContainer] = useState<HTMLElement | null>(null);
@@ -71,20 +70,20 @@ const Code = ({
       ? getCodeString(props.node.children)
       : React.Children.toArray(children)[0] || "";
 
-  const reRender = async () => {
+  const reRender = useCallback(async () => {
     if (container && isMermaid) {
       try {
         const { svg } = await mermaid.render(demoid.current, code as string);
         container.innerHTML = svg;
-      } catch (error: any) {
-        container.innerHTML = error.toString();
+      } catch (error: unknown) {
+        container.innerHTML = String(error);
       }
     }
-  };
+  }, [container, isMermaid, code, demoid]);
 
   useEffect(() => {
     reRender();
-  }, [container, isMermaid, code, demoid]);
+  }, [reRender]);
 
   const refElement = useCallback((node: HTMLElement | null) => {
     if (node !== null) {
