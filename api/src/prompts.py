@@ -1,25 +1,27 @@
 """
 @file This file contains the prompt templates for the LangChain chains.
 """
-
+import os
 from langchain_core.prompts import PromptTemplate
 
-ROUTER_PROMPT_TEMPLATE = """
+
+def load_system_prompt():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    prompt_path = os.path.join(current_dir, "prompts", "sysprompt.md")
+    with open(prompt_path, "r") as f:
+        return f.read() + "\\n\\n"
+
+system_prompt = load_system_prompt()
+
+ROUTER_PROMPT_TEMPLATE = system_prompt + """
 <Prompt>
-    <Persona>
-        You are Architext AI, an expert-level system architect AI. Your purpose is to guide
-        developers in making optimal architectural decisions for their software projects. You are deeply
-        knowledgeable about the latest, industry-standard technology stacks, cloud services, design
-        patterns, and security best practices. Your recommendations should reflect proven,
-        industry-standard best practices. Be decisive and confident in the options you provide.
-    </Persona>
     <Context>
         A user will provide their high-level project idea. The user could be an indie hacker with
         limited architectural experience or a senior developer looking to prototype quickly. Your
         questions must be clear enough for both.
     <UserIdea>{user_idea}</UserIdea>
     <Platform>{platform}</Platform>
-</Context>
+    </Context>
 <Task>    
     Your task is to analyze the user's idea and the target platform. Based on this, generate a set
     of the most critical clarifying questions needed to draft a robust Technical Design Document
@@ -184,8 +186,6 @@ ROUTER_PROMPT_TEMPLATE = """
 RouterPrompt = PromptTemplate.from_template(ROUTER_PROMPT_TEMPLATE)
 
 VALIDATOR_PROMPT_TEMPLATE = """
-<Persona>You are the gatekeeper for Architext AI, a system architect AI model. Your sole purpose is to determine if a user's input is a software project idea or a general-purpose question. You must be strict and accurate.</Persona>
-
 <Context>
 The user is trying to use an AI tool that generates technical design documents for software projects. The tool expects a description of a software application. It is not a general-purpose question-answering AI.
 
@@ -212,13 +212,10 @@ Respond with a single, valid JSON object and nothing else.
 
 ValidatorPrompt = PromptTemplate.from_template(VALIDATOR_PROMPT_TEMPLATE)
 
-TDD_PROMPT_TEMPLATE = """
-<Persona>
-You are Architext AI, an expert-level system architect AI. Your role is to generate a comprehensive, developer-ready Technical Design Document (TDD) based on user-provided information. You must follow the provided structure precisely and use industry-standard best practices in your recommendations.
-</Persona>
+TDD_PROMPT_TEMPLATE = system_prompt + """
 
 <Context>
-A user has provided the following details for their project:
+A user has provided the following details for their project. Using this information, generate a comprehensive, developer-ready Technical Design Document (TDD) based on user-provided information.:
 - **Initial Idea:** {user_idea}
 - **Application Type:** {platform}
 - **Clarifying Questions & Answers:** 
@@ -235,7 +232,7 @@ IMPORTANT: Produce **GitHub-flavored Markdown** syntax exactly as shown in the e
 </Task>
 
 <OutputFormat>
-Respond with a single, valid JSON object and nothing else. The JSON object must contain a single key, "tdd", which holds the complete TDD as a multi-line Markdown string. Do not include any explanatory text or any characters before or after the JSON object.
+Respond with a single, valid JSON object and nothing else. You must follow the provided structure precisely. The JSON object must contain a single key, "tdd", which holds the complete TDD as a multi-line Markdown string. Do not include any explanatory text or any characters before or after the JSON object.
 </OutputFormat>
 
 <ExampleTDD>
@@ -247,41 +244,51 @@ Respond with a single, valid JSON object and nothing else. The JSON object must 
 ## 1. Introduction
 
 ### 1.1. Project Overview
+
 (Provide a concise, one-paragraph summary of the application's purpose and primary function based on the user's idea.)
 
 ### 1.2. Problem Statement
+
 (Describe the core problem the application intends to solve.)
 
 ### 1.3. Goals and Objectives
+
 (List 3-5 key objectives of the application in a bulleted list. These should be SMART: Specific, Measurable, Achievable, Relevant, Time-bound where possible.)
 
 ### 1.4. Scope
+
 (Detail what is in scope for the initial version.)
 
 ### 1.5. Out of Scope (Non-Goals)
+
 (List features or functionalities that are explicitly out of scope for the first version to manage project scope.)
 
 ## 2. Business Processes
+
 (Describe the key user flows and business processes. For major processes, provide a step-by-step description.)
 
 ### 2.1. [Business Process 1 Name, e.g., User Registration & Onboarding]
-1. Step 1...
-2. Step 2...
-3. Step 3...
+
+1.  Step 1...
+2.  Step 2...
+3.  Step 3...
 
 ### 2.2. [Business Process 2 Name, e.g., Core Feature Workflow]
+
 (Description or steps)
 
 ## 3. System Architecture and Design
 
 ### 3.1. High-Level Architecture
+
 (Describe the overall architectural pattern, e.g., client-server, microservices, etc. An architecture diagram using Mermaid is highly recommended here to visualize component interaction.)
 
 ### 3.2. Technology Stack
-(Fill out a markdown table with specific and actionable recommendations. Provide a clear rationale for each choice, referencing the user's priorities like scalability, security, or cost-effectiveness.)
+
+(Fill out a markdown table with specific and actionable recommendations. For example, instead of "React", suggest "Next.js (React Framework)" or "React (Vite)". Provide a clear rationale for each choice, referencing the user's priorities like scalability, security, or cost-effectiveness.)
 
 | Layer      | Technology | Rationale |
-|------------|------------|-----------|
+| :--------- | :--------- | :-------- |
 | Frontend   |            |           |
 | Backend    |            |           |
 | Database   |            |           |
@@ -289,63 +296,90 @@ Respond with a single, valid JSON object and nothing else. The JSON object must 
 | Deployment |            |           |
 
 ### 3.3. Design Considerations
+
 #### 3.3.1. Scalability and Performance
+
 (How will the system handle growth? What are the expected response times? Mention strategies like caching, load balancing, or database indexing.)
 
 #### 3.3.2. Usability and User Interface (UI)
+
 (Describe key UI/UX considerations. E.g., "The application will have a responsive design, prioritizing mobile-first access. The interface will be clean and intuitive, requiring minimal user onboarding.")
 
 ## 4. Data Model and Management
 
 ### 4.1. Core Entities
+
 (List the primary data objects in the system, e.g., User, Post, Product.)
 
 ### 4.2. Schema Definitions
+
 (For each core entity, define its fields, types, and relationships. Be specific.)
 
 #### [Entity 1 Name]
+
 - `id` (Primary Key)
 - ...
 
 #### [Entity 2 Name]
+
 - `id` (Primary Key)
 - ...
 
 ### 4.3. Data Migration
+
 (Outline the strategy for data migration if applicable. If not applicable, state that this is a new system with no data migration required.)
 
 ## 5. Integration and API Design
 
 ### 5.1. API Endpoints (RESTful)
+
 (Define at least two key API endpoints. Specify the HTTP method, path, description, and example request/response bodies.)
 
 #### `METHOD /api/path`
+
 - **Description**: ...
 - **Request Body**: ...
 - **Response (200 OK)**: ...
 
 ### 5.2. External Services/Integrations
+
 (List any third-party services that will be integrated, e.g., Stripe for payments, SendGrid for emails. Describe the purpose of each integration.)
 
 ## 6. Security
 
 ### 6.1. Authentication and Authorization
+
 (Describe the proposed strategy for user authentication and authorization. Recommend specific technologies, e.g., Supabase Auth, NextAuth.js, JWTs. Detail the user roles and permissions if applicable.)
 
 ### 6.2. Security Considerations
+
 (List at least three specific security best practices relevant to the application, such as input validation, secrets management, data encryption (at rest and in transit), and dependency scanning.)
 
 ## 7. Reporting and Analytics
+
 (Outline the approach for collecting, storing, and visualizing key application metrics and user data. Mention any specific reports or dashboards to be created and the tools for them, e.g., Google Analytics, custom dashboards with Chart.js.)
 
 ## 8. Deployment and Operations
 
 ### 8.1. CI/CD Pipeline
+
 (Outline a plan for Continuous Integration and Continuous Deployment. Recommend specific platforms or tools, e.g., Vercel, GitHub Actions.)
 
 ### 8.2. Logging and Monitoring
+
 (Describe the strategy for logging application events and monitoring system health. Recommend specific tools, e.g., Sentry for error tracking, Prometheus/Grafana for performance monitoring.)
 
+## 9. Risks and Mitigations
+
+### 9.1. [Risk Category 1, e.g., Security]
+
+- **Risk**: (Describe a potential risk)
+- **Mitigation**: (Describe the strategy to mitigate this risk)
+
+### 9.2. [Risk Category 2, e.g., Scalability]
+
+- **Risk**: (Describe a potential risk)
+- **Mitigation**: (Describe the strategy to mitigate this risk)
 </ExampleTDD>
 """
 
