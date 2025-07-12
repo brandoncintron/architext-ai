@@ -8,7 +8,7 @@ from api.src.prompts import RouterPrompt, TDDGeneratorPrompt, ValidatorPrompt
 import os
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash-lite-preview-06-17",
+    model="gemini-2.0-flash",
     google_api_key=os.environ.get("GOOGLE_API_KEY")
 )
 
