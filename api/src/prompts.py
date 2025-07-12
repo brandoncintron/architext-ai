@@ -224,15 +224,172 @@ A user has provided the following details for their project. Using this informat
 </Context>
 
 <Task>
-Your task is to synthesize all the provided information into a complete TDD. You MUST follow the Markdown structure and content guidelines from the example below. Populate each section of the template with relevant, specific, and actionable details derived from the user's input. Be decisive in your technology choices, backing them up with clear rationale.
+Your task is to synthesize all the provided information into a complete TDD. Your primary goal is to create a document that is **useful** to the user. A novice developer building a portfolio app has different needs than a senior team building an enterprise system. You **must** tailor the complexity of your generated TDD to the project's scope, requirements, and implied user experience level.
 
-Where the user's input is ambiguous or lacking, you must make intelligent, well-reasoned assumptions based on the overall project goal. For instance, if a user describes a "social media app" but doesn't specify authentication, you should include a standard authentication section (e.g., email/password and social logins) and state it as a necessary component.
+**1. Assess the Project Scale:**
+- **For Simple / Portfolio-Scale Projects:** If the user describes a small application (e.g., 'a simple blog', 'a portfolio project', 'an app for my friends'), you must prioritize simplicity and speed of development. Your TDD should be lean and easy to understand.
+- **For Complex / Commercial-Scale Projects:** If the user describes a large-scale application with requirements like 'high availability', 'millions of users', or 'enterprise integration', you must provide a comprehensive, robust TDD suitable for an experienced engineering team.
 
-IMPORTANT: Produce **GitHub-flavored Markdown** syntax exactly as shown in the example—use `#` and `##` for headings, `-` for bullet lists, numbered lists beginning with `1.`, and tables defined with pipes (`|`).
+**2. Adjust TDD Complexity Accordingly:**
+- **Technology Stack Simplification:** For simpler projects, the Technology Stack table may only require `Frontend`, `Backend`, and `Database`. You can and should omit layers like `AI Service` if a simpler architecture (e.g., a monolith) doesn't require them. It is appropriate to recommend all-in-one platforms like Vercel, Supabase, or Firebase.
+- **Architectural Patterns:** Do not recommend microservices or event-driven architecture for a simple portfolio project. Recommend a monolithic or serverless function-based architecture instead.
+- **Section Omission:** For simple projects where an all-in-one platform is recommended, you can simplify or omit the `Deployment and Operations` section, explaining that the platform handles it.
+
+**3. Be Decisive and Justify:**
+Where the user's input is ambiguous or lacking, you must make intelligent, well-reasoned assumptions based on the overall project goal. Be decisive in your technology choices, backing them up with clear rationale. An overly complex TDD for a simple project is as unhelpful as an overly simple TDD for a complex one.
+
+IMPORTANT: Produce **GitHub-flavored Markdown** syntax—use `#` and `##` for headings, `-` for bullet lists, numbered lists beginning with `1.`, and tables defined with pipes (`|`). Your final output must be a pure, objective technical document. It must strictly follow the format below and must not contain any conversational text, meta-commentary, or self-reflection. Do not include sections about your internal guardrails, knowledge limitations, or your reasoning process.
 </Task>
 
 <OutputFormat>
-Respond with a single, valid JSON object and nothing else. You must follow the provided structure precisely. The JSON object must contain a single key, "tdd", which holds the complete TDD as a multi-line Markdown string. Do not include any explanatory text or any characters before or after the JSON object.
+Respond with a single, valid JSON object and nothing else. The JSON object must contain a single key, "tdd", which holds the complete TDD as a multi-line Markdown string. Do not include any explanatory text or any characters before or after the JSON object. The Markdown string must follow this structure:
+
+# Technical Design Document: [Name of User's Application]
+
+**Version:** 1.0
+**Status:** DRAFT
+
+## 1. Introduction
+
+### 1.1. Project Overview
+
+(Provide a concise, one-paragraph summary of the application's purpose and primary function based on the user's idea.)
+
+### 1.2. Problem Statement
+
+(Describe the core problem the application intends to solve.)
+
+### 1.3. Goals and Objectives
+
+(List 3-5 key objectives of the application in a bulleted list. These should be SMART: Specific, Measurable, Achievable, Relevant, Time-bound where possible.)
+
+### 1.4. Scope
+
+(Detail what is in scope for the initial version.)
+
+### 1.5. Out of Scope (Non-Goals)
+
+(List features or functionalities that are explicitly out of scope for the first version to manage project scope.)
+
+## 2. Business Processes
+
+(Describe the key user flows and business processes. For major processes, provide a step-by-step description.)
+
+### 2.1. [Business Process 1 Name, e.g., User Registration & Onboarding]
+
+1.  Step 1...
+2.  Step 2...
+3.  Step 3...
+
+### 2.2. [Business Process 2 Name, e.g., Core Feature Workflow]
+
+(Description or steps)
+
+## 3. System Architecture and Design
+
+### 3.1. High-Level Architecture
+
+(Describe the overall architectural pattern, e.g., client-server, microservices, etc. An architecture diagram using Mermaid is highly recommended here to visualize component interaction.)
+
+### 3.2. Technology Stack
+
+(Fill out a markdown table with specific and actionable recommendations. For example, instead of "React", suggest "Next.js (React Framework)" or "React (Vite)". Provide a clear rationale for each choice, referencing the user's priorities like scalability, security, or cost-effectiveness.)
+
+| Layer      | Technology | Rationale (Summary) | Security      | Scalability   | Cost-Effectiveness | Sustainability |
+| :--------- | :--------- | :------------------ | :------------ | :------------ | :----------------- | :------------- |
+| Frontend   |            |                     | (e.g., High)  | (e.g., High)  | (e.g., Low)        | (e.g., N/A)    |
+| Backend    |            |                     | (e.g., High)  | (e.g., High)  | (e.g., Medium)     | (e.g., High)   |
+| Database   |            |                     | (e.g., High)  | (e.g., Medium)| (e.g., High)       | (e.g., Medium) |
+| AI Service |            |                     | (e.g., High)  | (e.g., High)  | (e.g., Medium)     | (e.g., High)   |
+| Deployment |            |                     | (e.g., High)  | (e.g., Medium)| (e.g., High)       | (e.g., Medium) |
+
+
+
+### 3.3. Design Considerations
+
+#### 3.3.1. Scalability and Performance
+
+(How will the system handle growth? What are the expected response times? Mention strategies like caching, load balancing, or database indexing.)
+
+#### 3.3.2. Usability and User Interface (UI)
+
+(Describe key UI/UX considerations. E.g., "The application will have a responsive design, prioritizing mobile-first access. The interface will be clean and intuitive, requiring minimal user onboarding.")
+
+## 4. Data Model and Management
+
+### 4.1. Core Entities
+
+(List the primary data objects in the system, e.g., User, Post, Product.)
+
+### 4.2. Schema Definitions
+
+(For each core entity, define its fields, types, and relationships. Be specific.)
+
+#### [Entity 1 Name]
+
+- `id` (Primary Key)
+- ...
+
+#### [Entity 2 Name]
+
+- `id` (Primary Key)
+- ...
+
+### 4.3. Data Migration
+
+(Outline the strategy for data migration if applicable. If not applicable, state that this is a new system with no data migration required.)
+
+## 5. Integration and API Design
+
+### 5.1. API Endpoints (RESTful)
+
+(Define at least two key API endpoints. Specify the HTTP method, path, description, and example request/response bodies.)
+
+#### `METHOD /api/path`
+
+- **Description**: ...
+- **Request Body**: ...
+- **Response (200 OK)**: ...
+
+### 5.2. External Services/Integrations
+
+(List any third-party services that will be integrated, e.g., Stripe for payments, SendGrid for emails. Describe the purpose of each integration.)
+
+## 6. Security
+
+### 6.1. Authentication and Authorization
+
+(Describe the proposed strategy for user authentication and authorization. Recommend specific technologies, e.g., Supabase Auth, NextAuth.js, JWTs. Detail the user roles and permissions if applicable.)
+
+### 6.2. Security Considerations
+
+(List at least three specific security best practices relevant to the application, such as input validation, secrets management, data encryption (at rest and in transit), and dependency scanning.)
+
+## 7. Reporting and Analytics
+
+(Outline the approach for collecting, storing, and visualizing key application metrics and user data. Mention any specific reports or dashboards to be created and the tools for them, e.g., Google Analytics, custom dashboards with Chart.js.)
+
+## 8. Deployment and Operations
+
+### 8.1. CI/CD Pipeline
+
+(Outline a plan for Continuous Integration and Continuous Deployment. Recommend specific platforms or tools, e.g., Vercel, GitHub Actions.)
+
+### 8.2. Logging and Monitoring
+
+(Describe the strategy for logging application events and monitoring system health. Recommend specific tools, e.g., Sentry for error tracking, Prometheus/Grafana for performance monitoring.)
+
+## 9. Risks and Mitigations
+
+### 9.1. [Risk Category 1, e.g., Security]
+
+- **Risk**: (Describe a potential risk)
+- **Mitigation**: (Describe the strategy to mitigate this risk)
+
+### 9.2. [Risk Category 2, e.g., Scalability]
+
+- **Risk**: (Describe a potential risk)
+- **Mitigation**: (Describe the strategy to mitigate this risk)
 </OutputFormat>
 
 <ExampleTDD>
@@ -287,13 +444,15 @@ Respond with a single, valid JSON object and nothing else. You must follow the p
 
 (Fill out a markdown table with specific and actionable recommendations. For example, instead of "React", suggest "Next.js (React Framework)" or "React (Vite)". Provide a clear rationale for each choice, referencing the user's priorities like scalability, security, or cost-effectiveness.)
 
-| Layer      | Technology | Rationale |
-| :--------- | :--------- | :-------- |
-| Frontend   |            |           |
-| Backend    |            |           |
-| Database   |            |           |
-| AI Service |            |           |
-| Deployment |            |           |
+| Layer      | Technology | Rationale (Summary) | Security      | Scalability   | Cost-Effectiveness | Sustainability |
+| :--------- | :--------- | :------------------ | :------------ | :------------ | :----------------- | :------------- |
+| Frontend   |            |                     | (e.g., High)  | (e.g., High)  | (e.g., Low)        | (e.g., N/A)    |
+| Backend    |            |                     | (e.g., High)  | (e.g., High)  | (e.g., Medium)     | (e.g., High)   |
+| Database   |            |                     | (e.g., High)  | (e.g., Medium)| (e.g., High)       | (e.g., Medium) |
+| AI Service |            |                     | (e.g., High)  | (e.g., High)  | (e.g., Medium)     | (e.g., High)   |
+| Deployment |            |                     | (e.g., High)  | (e.g., Medium)| (e.g., High)       | (e.g., Medium) |
+
+
 
 ### 3.3. Design Considerations
 
