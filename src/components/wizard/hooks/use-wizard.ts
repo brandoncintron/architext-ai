@@ -1,3 +1,6 @@
+/**
+ * @file This hook manages the state and logic for the multi-step wizard.
+ */
 import { useMemo, useState } from "react";
 
 import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/schema";
@@ -10,7 +13,7 @@ export const useWizard = () => {
   const [initialFormValues, setInitialFormValues] =
     useState<InitialIdeaFormValues | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [answers, setAnswers] = useState<string[]>([]);
+  const [answers, setAnswers] = useState<(string | string[] | null)[]>([]);
   const [finalClarification, setFinalClarification] = useState("");
   const [generatedTDD, setGeneratedTDD] = useState("");
 
@@ -30,6 +33,7 @@ export const useWizard = () => {
     setInitialFormValues(values);
     try {
       const response = await fetch("/api/generate_plan", {
+        //signal: AbortSignal.timeout(60000),
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
@@ -42,7 +46,7 @@ export const useWizard = () => {
 
       const data = await response.json();
       setQuestions(data.questions);
-      setAnswers(new Array(data.questions.length).fill(""));
+      setAnswers(new Array(data.questions.length).fill(null));
       goToNextStep();
     } catch (error) {
       console.error(error);
@@ -59,16 +63,33 @@ export const useWizard = () => {
   };
 
   const handleAnswerSelect = (questionIndex: number, option: string) => {
-    const newAnswers = [...answers];
-    newAnswers[questionIndex] = option;
-    setAnswers(newAnswers);
+    setAnswers((prevAnswers) => {
+      const newAnswers = [...prevAnswers];
+      const question = questions[questionIndex];
+
+      if (question.type === "multi-choice") {
+        const currentSelection =
+          (newAnswers[questionIndex] as string[] | null) || [];
+        const selectionSet = new Set(currentSelection);
+        if (selectionSet.has(option)) {
+          selectionSet.delete(option);
+        } else {
+          selectionSet.add(option);
+        }
+        newAnswers[questionIndex] = Array.from(selectionSet);
+      } else {
+        newAnswers[questionIndex] = option;
+      }
+      return newAnswers;
+    });
   };
 
   const handleGenerateTDD = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/generate_tdd", {
+      const response = await fetch("/api/generate_tdd",  {
+        //signal: AbortSignal.timeout(60000),
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

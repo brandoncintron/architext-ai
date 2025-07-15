@@ -10,7 +10,8 @@ export interface ResultsStepProps {
 export interface QuestionStepProps {
   question: string;
   options: string[];
-  selection: string | null;
+  type: "single-choice" | "multi-choice";
+  selection: string | string[] | null;
   onSelectionChange: (option: string) => void;
 }
 
@@ -37,7 +38,8 @@ export interface InitialIdeaStepProps {
 }
 
 // use-wizard.tsx
-export interface Question {
+export type Question = {
+  type: "single-choice" | "multi-choice";
   question: string;
   options: string[];
-}
+};
