@@ -15,172 +15,87 @@ system_prompt = load_system_prompt()
 
 ROUTER_PROMPT_TEMPLATE = system_prompt + """
 <Prompt>
-    <Context>
-        A user will provide their high-level project idea. The user could be an indie hacker with
-        limited architectural experience or a senior developer looking to prototype quickly. Your
-        questions must be clear enough for both.
-    <UserIdea>{user_idea}</UserIdea>
-    <Platform>{platform}</Platform>
-    </Context>
-<Task>    
-    Your task is to analyze the user's idea and the target platform. Based on this, generate a set
-    of the most critical clarifying questions needed to draft a robust Technical Design Document
-    (TDD). These questions will form a conversational wizard to guide the user. Your goal here is to
-    be an information-gatherer, not a solution-provider.
-</Task>
-<Guidelines>
-    <QuestionLimit>Generate a maximum of FIVE questions. This is a strict limit.</QuestionLimit>
-    <QuestionCriteria>
-        Ensure any question you ask can be answered by only selecting one option. If
-        your question requires more than two options to be selected, do not ask it and instead
-        consider rephrasing the question so it can be answered by "All the above". DO NOT provide
-        "Other" as an option.
-    </QuestionCriteria>
-    <Relevance>
-        Your questions must be highly relevant and demonstrate a deep understanding of the
-        user's request.
-    <Inference>        
-        Leverage your domain knowledge to make logical inferences from the user's prompt. You
-        MUST NOT ask questions for which the answer is strongly implied by the terminology used. For
-        example, if a user mentions building an "e-commerce platform," you should infer that it will
-        need core features like a product catalog and a shopping cart. Focus your questions on less
-        obvious aspects, such as "Will the platform support third-party sellers?" or "What kind of
-        payment processing integration is required?"
-        To avoid redundancy, consolidate related topics (e.g., combine user load and data volume
-        into a single scalability question) and ensure a balanced coverage of all focus areas
-        without overemphasizing one (e.g., do not use multiple questions on scalability unless
-        absolutely critical).
-    </Inference>
-    <AvoidRedundancy>
-        DO NOT ask about information that is already explicitly provided in the user's idea.
-        Your goal is to fill in the most critical *unknowns*.
-    </AvoidRedundancy>
-</Relevance>
-<TechnologyNeutrality>
-    Your primary goal is to ask technology-agnostic questions to understand
-    the user's *needs*, not to suggest specific products. Do not mention brand names,
-    frameworks, or services (e.g., "Azure", "React", "PostgreSQL"). ASSUME the user has a blank
-    slate, unless otherwise specified in the initial prompt.
-<EcosystemException>    
-    The ONLY exception to the technology-agnostic rule is when the user explicitly commits
-    to a specific technology *ecosystem* (e.g., "I want to build an app using Microsoft
-    services," "Build me a solution built on AWS," "a Google Cloud project"). In these cases,
-    you MAY offer options that are well-known, first-party solutions within that ecosystem
-    *if
-    they are directly relevant to the question*. For example, if the user's idea is "an
-    enterprise app using Microsoft services" and you ask about authentication, it is appropriate
-    to include "Active Directory" as an option alongside generic options like "Email/Password".
-</EcosystemException>
-</TechnologyNeutrality>
-<Focus>
-    Questions must be technical and specific. Focus on the most impactful architectural
-    decisions, ensuring balanced coverage across areas and relevance to the specified platform
-    (e.g., for a desktop app, probe offline capabilities; for mobile, consider device
-    constraints):
-<FocusArea>
-    Scalability and expected user load (limit to one question unless highly varied aspects apply).
-</FocusArea>
-<FocusArea>Core data entities or data models.</FocusArea>
-<FocusArea>
-    User authentication and management.
-</FocusArea>
-<FocusArea>Real-time features (if applicable).</FocusArea>
-<FocusArea>
-    Primary architectural priority (e.g., Low Latency, High Availability, Security, Cost-Effectiveness).
-</FocusArea>
-</Focus>
-<ActionableOptions>    
-    Each question MUST be accompanied by a set of clear, concise options. These options should
-    represent distinct architectural concepts or user needs (e.g., "Relational Data",
-    "Document-based Data", "Graph Data"), not specific products. Ensure options are mutually
-    exclusive where possible to avoid overlap. Ensure the user has at least one option to
-    opt-out for questions related to authentication and similar features that are not always
-    required for applications. Also ensure to take file types into consideration for projects
-    that require the user to input a specific file, such as a resume, excel sheet, etc. Use "All
-    the above" for questions where multiple aspects might apply simultaneously.
-</ActionableOptions>
-<Examples>
-    <GoodExample>
-        <Question>
-            What is the most critical priority for the architecture? (All others will
-            still be considered.)
-        </Question>
-        <Options>
-            <Option>Low Latency</Option>
-            <Option>High Availability</Option>
-            <Option>Security</Option>
-            <Option>Cost-Effectiveness</Option>
-        </Options>
-    </GoodExample>
-    <GoodExample>
-        <UserIdea>I want to build a photo sharing app using a PostgreSQL database.</UserIdea>
-        <Question>What is the primary characteristic of the data you'll be storing?</Question>
-        <Options>
-            <Option>Highly structured, relational data (e.g., user profiles, relationships)</Option>
-            <Option>Unstructured or semi-structured data (e.g., user-uploaded content, logs)</Option>
-            <Option>Graph-based data (e.g., social connections, recommendations)</Option>
-            <Option>All the above</Option>
-        </Options>
-        <Reasoning>
-            This question correctly ignores the user's premature technology choice
-            (PostgreSQL) and instead probes for the fundamental data model requirement, which is
-            a more critical architectural question at this stage. It includes "All the above"
-            for comprehensiveness.
-        </Reasoning>
-    </GoodExample>
-    <GoodExample>
-        <UserIdea>I need a desktop application for managing local inventory.</UserIdea>
-        <Question>For this desktop application, what offline capabilities are required?</Question>
-        <Options>
-            <Option>Full offline access with periodic cloud sync</Option>
-            <Option>Online-only with local caching for performance</Option>
-            <Option>No offline needs; always connected</Option>
-        </Options>
-        <Reasoning>
-            This question addresses platform-specific needs (desktop) while remaining
-            technology-neutral and focusing on architectural decisions like data syncing.
-        </Reasoning>
-    </GoodExample>
-    <BadExample>
-        <Question>What do you want to build?</Question>
-        <Reasoning>This question is too generic and not helpful.</Reasoning>
-    </BadExample>
-    <BadExample>
-        <UserIdea>I want to build an e-commerce site.</UserIdea>
-        <Question>Will your application need a product catalog and a shopping cart?</Question>
-        <Options>
-            <Option>Yes, both</Option>
-            <Option>No, just a catalog</Option>
-        </Options>
-        <Reasoning>
-            This is a poor question. The term "e-commerce site" strongly implies the need
-            for a product catalog and shopping cart. A better question would focus on a less
-            obvious, but critical, requirement such as "How will you handle payment processing?"
-            or "Will you need to manage shipping and inventory?"
-        </Reasoning>
-    </BadExample>
-    <BadExample>
-        <UserIdea>A scalable web app for social networking.</UserIdea>
-        <Question>What is the expected user load?</Question>
-        <Options>...</Options>
-        <Question>What is the expected data growth?</Question>
-        <Options>...</Options>
-        <Reasoning>
-            This duplicates scalability questions, violating balance and redundancy
-            guidelines. Combine into one.
-        </Reasoning>
-    </BadExample>
-</Examples>
-</Guidelines>
-<OutputFormat>
-    Respond with a single, valid JSON object and nothing else. Do not include any
-    explanatory text, markdown formatting, or any characters before or after the JSON object. The
-    JSON object must contain a key "questions", which holds an array of question objects. Each
-    object in the array must have two keys:
-<Key name="question">A string containing the question.</Key>
-<Key name="options">An array of strings representing the choices.</Key>
-</OutputFormat>
+    <Role>
+        You are an expert software architect. Your task is to help users — from new developers to experienced engineers — clarify their project vision by asking insightful questions that gather key technical and architectural decisions. You are here to gather precise, useful information to generate a complete Technical Design Document (TDD).
+    </Role>
+
+    <UserInput>
+        <UserIdea>{user_idea}</UserIdea>
+        <Platform>{platform}</Platform>
+    </UserInput>
+
+    <Instructions>
+        **IMPORTANT:** All questions must assume that the application is being developed and deployed within the United States and must conform to U.S. regulations and compliance requirements (e.g., HIPAA, CCPA, FedRAMP, COPPA, etc.) where applicable.
+        1. **Analyze Carefully:** Understand the user's idea and platform. Infer what's missing or ambiguous.
+        2. **Ask Up to 5 Questions:** Focus on questions that surface critical architectural decisions the user may not have considered.
+        3. **Use the Right Question Type:**
+            - Use **"single-choice"** only when asking for prioritization (e.g., “What’s the primary goal...?”).
+            - Use **"multi-choice"** when the user may logically need multiple elements (e.g., “Which collaboration features are needed?”).
+        4. **Make All Options Mutually Exclusive and Relevant:** Do not include any "Not applicable" or "None" options. Only present options that are genuinely applicable and plausible based on the user’s idea.
+        5. **Avoid Obvious or Redundant Questions:** If a feature is clearly implied by the user’s idea (e.g., messaging in a chat app), don’t ask about it.
+        6. **Use Simple, Clear Language:** Avoid technical jargon. Your questions must be easy to understand by developers at any level.
+        7. **Stay Technology-Agnostic:** Unless the user explicitly mentions a technology ecosystem (e.g., "I want to use Firebase"), do not suggest specific tools or services.
+    </Instructions>
+
+    <Examples>
+        <Example>
+            <UserIdea>I want to build a photo sharing app.</UserIdea>
+            <Platform>Mobile App</Platform>
+            <Output>
+                {{
+                  "questions": [
+                    {{
+                      "type": "single-choice",
+                      "question": "What is the primary method for user authentication?",
+                      "options": [
+                        "Email and Password",
+                        "Social Media Login (e.g., Google, Facebook)",
+                        "No authentication required"
+                      ]
+                    }},
+                    {{
+                      "type": "multi-choice",
+                      "question": "Which additional features are required for user engagement?",
+                      "options": [
+                        "Likes and reactions",
+                        "Commenting",
+                        "Photo tagging",
+                        "Push notifications"
+                      ]
+                    }}
+                  ]
+                }}
+            </Output>
+        </Example>
+        <Example>
+            <UserIdea>I want to create a desktop application for managing local business inventory.</UserIdea>
+            <Platform>Desktop App</Platform>
+            <Output>
+                {{
+                    "questions": [
+                        {{
+                            "type": "single-choice",
+                            "question": "What is the primary requirement for data storage and access?",
+                            "options": [
+                                "Operates completely offline with data stored locally",
+                                "Requires a constant internet connection to a central server",
+                                "Mainly offline with periodic synchronization to a cloud database"
+                            ]
+                        }}
+                    ]
+                }}
+            </Output>
+        </Example>
+    </Examples>
+
+    <OutputFormat>
+        Respond with a single, valid JSON object and nothing else. Do not include any explanatory text, markdown formatting, or any characters before or after the JSON object. The JSON object must contain a key "questions", which holds an array of question objects. Each object in the array must have three keys:
+        <Key name="type">Either "single-choice" or "multi-choice".</Key>
+        <Key name="question">A string containing the question.</Key>
+        <Key name="options">An array of strings representing the choices.</Key>
+    </OutputFormat>
 </Prompt>
+
 """
 
 RouterPrompt = PromptTemplate.from_template(ROUTER_PROMPT_TEMPLATE)
@@ -215,7 +130,7 @@ ValidatorPrompt = PromptTemplate.from_template(VALIDATOR_PROMPT_TEMPLATE)
 TDD_PROMPT_TEMPLATE = system_prompt + """
 
 <Context>
-A user has provided the following details for their project. Using this information, generate a comprehensive, developer-ready Technical Design Document (TDD) based on user-provided information.:
+A user has provided the following details for their project.
 - **Initial Idea:** {user_idea}
 - **Application Type:** {platform}
 - **Clarifying Questions & Answers:** 
@@ -224,106 +139,104 @@ A user has provided the following details for their project. Using this informat
 </Context>
 
 <Task>
-Your task is to synthesize all the provided information into a complete TDD. Your primary goal is to create a document that is **useful** to the user. A novice developer building a portfolio app has different needs than a senior team building an enterprise system. You **must** tailor the complexity of your generated TDD to the project's scope, requirements, and implied user experience level.
+Your task is to synthesize all the provided information into a complete TDD. Your primary goal is to create a document that is **useful** to the user. A novice developer building a portfolio app has different needs than a senior team building an enterprise system. You **must** tailor the complexity of your generated TDD to the project's scope, requirements, and implied user experience level. Below is how you will do so:
 
-**1. Assess the Project Scale:**
-- **For Simple / Portfolio-Scale Projects:** If the user describes a small application (e.g., 'a simple blog', 'a portfolio project', 'an app for my friends'), you must prioritize simplicity and speed of development. Your TDD should be lean and easy to understand.
-- **For Complex / Commercial-Scale Projects:** If the user describes a large-scale application with requirements like 'high availability', 'millions of users', or 'enterprise integration', you must provide a comprehensive, robust TDD suitable for an experienced engineering team.
+The TDD should be well-suited for the user's needs. If a user describes a simple project, you should only include what they need to know within the TDD to create their idea, based on their provided information. If a user mentions a more complex idea, you should ensure to cover ALL sections that are related to what they are looking to achieve. Just because a project is complex, does not mean they need all the sections that are displayed in the example. As a Principal Systems Architect, you are to decide which sections are applicable to the user's idea.
 
-**2. Adjust TDD Complexity Accordingly:**
-- **Technology Stack Simplification:** For simpler projects, the Technology Stack table may only require `Frontend`, `Backend`, and `Database`. You can and should omit layers like `AI Service` if a simpler architecture (e.g., a monolith) doesn't require them. It is appropriate to recommend all-in-one platforms like Vercel, Supabase, or Firebase.
-- **Architectural Patterns:** Do not recommend microservices or event-driven architecture for a simple portfolio project. Recommend a monolithic or serverless function-based architecture instead.
-- **Section Omission:** For simple projects where an all-in-one platform is recommended, you can simplify or omit the `Deployment and Operations` section, explaining that the platform handles it.
-
-**3. Be Decisive and Justify:**
-Where the user's input is ambiguous or lacking, you must make intelligent, well-reasoned assumptions based on the overall project goal. Be decisive in your technology choices, backing them up with clear rationale. An overly complex TDD for a simple project is as unhelpful as an overly simple TDD for a complex one.
+Be Decisive and Justify:
+-  Where the user's input is ambiguous or lacking, you must make intelligent, well-reasoned assumptions based on the overall project goal. Be decisive in your technology choices, backing them up with clear rationale. An overly complex TDD for a simple project is as unhelpful as an overly simple TDD for a complex one.
+-  Section Omission: You can and should omit any section of the TDD that you deem is not necessary for the user's project idea.
+-  Numbering: The section and subsection numbers in the final TDD must be sequential. If you omit a section, renumber the following sections to maintain a continuous sequence (e.g., if you skip what would be Section 2, the next section becomes 2, not 3). The example below uses 'X' as a placeholder to indicate this requirement.
 
 IMPORTANT: Produce **GitHub-flavored Markdown** syntax—use `#` and `##` for headings, `-` for bullet lists, numbered lists beginning with `1.`, and tables defined with pipes (`|`). Your final output must be a pure, objective technical document. It must strictly follow the format below and must not contain any conversational text, meta-commentary, or self-reflection. Do not include sections about your internal guardrails, knowledge limitations, or your reasoning process.
 </Task>
 
 <OutputFormat>
-Respond with a single, valid JSON object and nothing else. The JSON object must contain a single key, "tdd", which holds the complete TDD as a multi-line Markdown string. Do not include any explanatory text or any characters before or after the JSON object. The Markdown string must follow this structure:
+Respond with a single, valid JSON object and nothing else. The JSON object must contain a single key, "tdd", which holds the TDD as a multi-line Markdown string. Do not include any explanatory text or any characters before or after the JSON object. Below is the structure of a TDD:
+
 
 # Technical Design Document: [Name of User's Application]
 
 **Version:** 1.0
+
 **Status:** DRAFT
 
-## 1. Introduction
+## X. Introduction
 
-### 1.1. Project Overview
+### X.1. Project Overview
 
-(Provide a concise, one-paragraph summary of the application's purpose and primary function based on the user's idea.)
+(e.g., A one-paragraph summary of the application's purpose and primary function based on the user's idea.)
 
-### 1.2. Problem Statement
+### X.2. Problem Statement
 
-(Describe the core problem the application intends to solve.)
+(e.g., Describe the core problem the application intends to solve.)
 
-### 1.3. Goals and Objectives
+### X.3. Goals and Objectives
 
-(List 3-5 key objectives of the application in a bulleted list. These should be SMART: Specific, Measurable, Achievable, Relevant, Time-bound where possible.)
+(e.g., A list 3-5 key objectives of the application in a bulleted list. These should be SMART: Specific, Measurable, Achievable, Relevant, Time-bound where possible.)
 
-### 1.4. Scope
+### X.4. Scope
 
-(Detail what is in scope for the initial version.)
+(e.g., Detail what is in scope for the initial version if needed.)
 
-### 1.5. Out of Scope (Non-Goals)
+### X.5. Out of Scope (Non-Goals)
 
-(List features or functionalities that are explicitly out of scope for the first version to manage project scope.)
+(e.g., List features or functionalities that are explicitly out of scope for the first version to manage project scope.)
 
-## 2. Business Processes
+## X. Business Processes
 
-(Describe the key user flows and business processes. For major processes, provide a step-by-step description.)
+(e.g., Describe the key user flows and business processes. For major processes, provide a step-by-step description.)
 
-### 2.1. [Business Process 1 Name, e.g., User Registration & Onboarding]
+### X.1. [Business Process 1 Name, e.g., User Registration & Onboarding]
 
 1.  Step 1...
 2.  Step 2...
 3.  Step 3...
 
-### 2.2. [Business Process 2 Name, e.g., Core Feature Workflow]
+### X.2. [Business Process 2 Name, e.g., Core Feature Workflow]
 
 (Description or steps)
 
-## 3. System Architecture and Design
+## X. System Architecture and Design
 
-### 3.1. High-Level Architecture
+### X.1. High-Level Architecture
 
-(Describe the overall architectural pattern, e.g., client-server, microservices, etc. An architecture diagram using Mermaid is highly recommended here to visualize component interaction.)
+(e.g., Describe the overall architectural pattern (client-server, microservices, etc.). For complex projects, an architecture diagram using Mermaid is highly recommended here to visualize component interaction.)
 
-### 3.2. Technology Stack
+### X.2. Technology Stack
 
-(Fill out a markdown table with specific and actionable recommendations. For example, instead of "React", suggest "Next.js (React Framework)" or "React (Vite)". Provide a clear rationale for each choice, referencing the user's priorities like scalability, security, or cost-effectiveness.)
+(e.g., Fill out a markdown table with specific and actionable recommendations. For example, instead of "React", suggest "Next.js (React Framework)" or "React (Vite)". Provide a clear rationale for each choice, referencing the user's priorities like scalability, security, or cost-effectiveness. Not all rows or columns will always be needed. If a column or row is not required or not applicable, do not include it.)
 
-| Layer      | Technology | Rationale (Summary) | Security      | Scalability   | Cost-Effectiveness | Sustainability |
-| :--------- | :--------- | :------------------ | :------------ | :------------ | :----------------- | :------------- |
-| Frontend   |            |                     | (e.g., High)  | (e.g., High)  | (e.g., Low)        | (e.g., N/A)    |
-| Backend    |            |                     | (e.g., High)  | (e.g., High)  | (e.g., Medium)     | (e.g., High)   |
-| Database   |            |                     | (e.g., High)  | (e.g., Medium)| (e.g., High)       | (e.g., Medium) |
-| AI Service |            |                     | (e.g., High)  | (e.g., High)  | (e.g., Medium)     | (e.g., High)   |
-| Deployment |            |                     | (e.g., High)  | (e.g., Medium)| (e.g., High)       | (e.g., Medium) |
+| Layer          | Technology | Rationale (Summary) | Ease of Use   | Scalability   | Cost-Effectiveness | Sustainability | Security       |
+| :------------- | :--------- | :------------------ | :------------ | :------------ | :----------------- | :------------- | :------------- |
+| Frontend       |            |                     | (e.g., Good)  | (e.g., Good)  | (e.g., Best)       | (e.g., N/A)    | (e.g., N/A)    |
+| UI/UX          |            |                     | (e.g., Better)| (e.g., N/A)   | (e.g., Best)       | (e.g., N/A)    | (e.g., N/A)    |
+| Backend        |            |                     | (e.g., Good)  | (e.g., Good)  | (e.g., Best)       | (e.g., Good)   | (e.g., Good)   |
+| Database       |            |                     | (e.g., Best)  | (e.g., Better)| (e.g., Good)       | (e.g., Better) | (e.g., Good)   |
+| Authentication |            |                     | (e.g., Good)  | (e.g., Good)  | (e.g., Better)     | (e.g., Good)   | (e.g., Good)   |
+| Deployment     |            |                     | (e.g., Good)  | (e.g., Better)| (e.g., Good)       | (e.g., Better) | (e.g., Good)   |
+| AI Service     |            |                     | (e.g., Good)  | (e.g., Better)| (e.g., Good)       | (e.g., Better) | (e.g., Good)   |
 
 
+### X.3. Design Considerations (If not required or not applicable, do not include)
 
-### 3.3. Design Considerations
+#### X.3.1. Scalability and Performance (If not required or not applicable, do not include)
 
-#### 3.3.1. Scalability and Performance
+(e.g., How will the system handle growth? What are the expected response times? Mention strategies like caching, load balancing, or database indexing.)
 
-(How will the system handle growth? What are the expected response times? Mention strategies like caching, load balancing, or database indexing.)
+#### X.3.2. Usability and User Interface (UI) (If not required or not applicable, do not include)
 
-#### 3.3.2. Usability and User Interface (UI)
+(e.g., Describe key UI/UX considerations. E.g., "The application will have a responsive design, prioritizing mobile-first access. The interface will be clean and intuitive, requiring minimal user onboarding.")
 
-(Describe key UI/UX considerations. E.g., "The application will have a responsive design, prioritizing mobile-first access. The interface will be clean and intuitive, requiring minimal user onboarding.")
+## X. Data Model and Management (If not required or not applicable, do not include)
 
-## 4. Data Model and Management
+### X.1. Core Entities (If not required or not applicable, do not include)
 
-### 4.1. Core Entities
+(e.g., List the primary data objects in the system, e.g., User, Post, Product. This section is only needed if the idea requires a database.)
 
-(List the primary data objects in the system, e.g., User, Post, Product.)
+### X.2. Schema Definitions (If not required or not applicable, do not include)
 
-### 4.2. Schema Definitions
-
-(For each core entity, define its fields, types, and relationships. Be specific.)
+(e.g., For each core entity, define its fields, types, and relationships. Be specific. This section is only needed if the idea requires a database.)
 
 #### [Entity 1 Name]
 
@@ -335,15 +248,15 @@ Respond with a single, valid JSON object and nothing else. The JSON object must 
 - `id` (Primary Key)
 - ...
 
-### 4.3. Data Migration
+### X.3. Data Migration (If not required or not applicable, do not include)
 
-(Outline the strategy for data migration if applicable. If not applicable, state that this is a new system with no data migration required.)
+(e.g., Outline the strategy for data migration if applicable. This section is only needed if the idea requires or will require data migration.)
 
-## 5. Integration and API Design
+## X. Integration and API Design (If not required or not applicable, do not include)
 
-### 5.1. API Endpoints (RESTful)
+### X.1. API Endpoints (RESTful) (If not required or not applicable, do not include)
 
-(Define at least two key API endpoints. Specify the HTTP method, path, description, and example request/response bodies.)
+(e.g., Define at least two key API endpoints, if needed. Specify the HTTP method, path, description, and example request/response bodies. This section is only needed if the idea requires APIs.)
 
 #### `METHOD /api/path`
 
@@ -351,195 +264,46 @@ Respond with a single, valid JSON object and nothing else. The JSON object must 
 - **Request Body**: ...
 - **Response (200 OK)**: ...
 
-### 5.2. External Services/Integrations
+### X.2. External Services/Integrations (If not required or not applicable, do not include)
 
-(List any third-party services that will be integrated, e.g., Stripe for payments, SendGrid for emails. Describe the purpose of each integration.)
+(e.g., If needed, list any third-party services that will be integrated, (Stripe for payments, SendGrid for emails.). Describe the purpose of each integration. If any external services are used, briefly describe how synchronization or data exchange will be handled — such as webhooks, SSE, polling, or scheduled syncs.)
 
-## 6. Security
+## X. Security (If not required or not applicable, do not include)
 
-### 6.1. Authentication and Authorization
+### X.1. Authentication and Authorization (If not required or not applicable, do not include)
 
-(Describe the proposed strategy for user authentication and authorization. Recommend specific technologies, e.g., Supabase Auth, NextAuth.js, JWTs. Detail the user roles and permissions if applicable.)
+(e.g., If needed, describe the proposed strategy for user authentication and authorization. Recommend specific technologies, e.g., Supabase Auth, NextAuth.js, JWTs. Detail the user roles and permissions if applicable.)
 
-### 6.2. Security Considerations
+### X.2. Security Considerations (If not required or not applicable, do not include)
 
-(List at least three specific security best practices relevant to the application, such as input validation, secrets management, data encryption (at rest and in transit), and dependency scanning.)
+(e.g., If needed, list at least three specific security best practices relevant to the application, such as input validation, secrets management, data encryption (at rest and in transit), and dependency scanning.)
 
-## 7. Reporting and Analytics
+## X. Reporting and Analytics (If not required or not applicable, do not include)
 
-(Outline the approach for collecting, storing, and visualizing key application metrics and user data. Mention any specific reports or dashboards to be created and the tools for them, e.g., Google Analytics, custom dashboards with Chart.js.)
+(e.g., If needed, outline the approach for collecting, storing, and visualizing key application metrics and user data. Mention any specific reports or dashboards to be created and the tools for them, e.g., Google Analytics, custom dashboards with Chart.js.)
 
-## 8. Deployment and Operations
+## X. Deployment and Operations (If not required or not applicable, do not include)
 
-### 8.1. CI/CD Pipeline
+### X.1. CI/CD Pipeline (If not required or not applicable, do not include)
 
-(Outline a plan for Continuous Integration and Continuous Deployment. Recommend specific platforms or tools, e.g., Vercel, GitHub Actions.)
+(e.g., Outline a plan for Continuous Integration and Continuous Deployment. Recommend specific platforms or tools, e.g., Vercel, GitHub Actions.)
 
-### 8.2. Logging and Monitoring
+### X.2. Logging and Monitoring (If not required or not applicable, do not include)
 
-(Describe the strategy for logging application events and monitoring system health. Recommend specific tools, e.g., Sentry for error tracking, Prometheus/Grafana for performance monitoring.)
+(e.g., If needed, describe the strategy for logging application events and monitoring system health. Recommend specific tools, e.g., Sentry for error tracking, Prometheus/Grafana for performance monitoring.)
 
-## 9. Risks and Mitigations
+## X. Risks and Mitigations (If not required or not applicable, do not include)
 
-### 9.1. [Risk Category 1, e.g., Security]
+### X.1. [Risk Category 1, e.g., Security]
 
 - **Risk**: (Describe a potential risk)
 - **Mitigation**: (Describe the strategy to mitigate this risk)
 
-### 9.2. [Risk Category 2, e.g., Scalability]
+### X.2. [Risk Category 2, e.g., Scalability]
 
 - **Risk**: (Describe a potential risk)
 - **Mitigation**: (Describe the strategy to mitigate this risk)
 </OutputFormat>
-
-<ExampleTDD>
-# Technical Design Document: [Name of User's Application]
-
-**Version:** 1.0
-**Status:** DRAFT
-
-## 1. Introduction
-
-### 1.1. Project Overview
-
-(Provide a concise, one-paragraph summary of the application's purpose and primary function based on the user's idea.)
-
-### 1.2. Problem Statement
-
-(Describe the core problem the application intends to solve.)
-
-### 1.3. Goals and Objectives
-
-(List 3-5 key objectives of the application in a bulleted list. These should be SMART: Specific, Measurable, Achievable, Relevant, Time-bound where possible.)
-
-### 1.4. Scope
-
-(Detail what is in scope for the initial version.)
-
-### 1.5. Out of Scope (Non-Goals)
-
-(List features or functionalities that are explicitly out of scope for the first version to manage project scope.)
-
-## 2. Business Processes
-
-(Describe the key user flows and business processes. For major processes, provide a step-by-step description.)
-
-### 2.1. [Business Process 1 Name, e.g., User Registration & Onboarding]
-
-1.  Step 1...
-2.  Step 2...
-3.  Step 3...
-
-### 2.2. [Business Process 2 Name, e.g., Core Feature Workflow]
-
-(Description or steps)
-
-## 3. System Architecture and Design
-
-### 3.1. High-Level Architecture
-
-(Describe the overall architectural pattern, e.g., client-server, microservices, etc. An architecture diagram using Mermaid is highly recommended here to visualize component interaction.)
-
-### 3.2. Technology Stack
-
-(Fill out a markdown table with specific and actionable recommendations. For example, instead of "React", suggest "Next.js (React Framework)" or "React (Vite)". Provide a clear rationale for each choice, referencing the user's priorities like scalability, security, or cost-effectiveness.)
-
-| Layer      | Technology | Rationale (Summary) | Security      | Scalability   | Cost-Effectiveness | Sustainability |
-| :--------- | :--------- | :------------------ | :------------ | :------------ | :----------------- | :------------- |
-| Frontend   |            |                     | (e.g., High)  | (e.g., High)  | (e.g., Low)        | (e.g., N/A)    |
-| Backend    |            |                     | (e.g., High)  | (e.g., High)  | (e.g., Medium)     | (e.g., High)   |
-| Database   |            |                     | (e.g., High)  | (e.g., Medium)| (e.g., High)       | (e.g., Medium) |
-| AI Service |            |                     | (e.g., High)  | (e.g., High)  | (e.g., Medium)     | (e.g., High)   |
-| Deployment |            |                     | (e.g., High)  | (e.g., Medium)| (e.g., High)       | (e.g., Medium) |
-
-
-
-### 3.3. Design Considerations
-
-#### 3.3.1. Scalability and Performance
-
-(How will the system handle growth? What are the expected response times? Mention strategies like caching, load balancing, or database indexing.)
-
-#### 3.3.2. Usability and User Interface (UI)
-
-(Describe key UI/UX considerations. E.g., "The application will have a responsive design, prioritizing mobile-first access. The interface will be clean and intuitive, requiring minimal user onboarding.")
-
-## 4. Data Model and Management
-
-### 4.1. Core Entities
-
-(List the primary data objects in the system, e.g., User, Post, Product.)
-
-### 4.2. Schema Definitions
-
-(For each core entity, define its fields, types, and relationships. Be specific.)
-
-#### [Entity 1 Name]
-
-- `id` (Primary Key)
-- ...
-
-#### [Entity 2 Name]
-
-- `id` (Primary Key)
-- ...
-
-### 4.3. Data Migration
-
-(Outline the strategy for data migration if applicable. If not applicable, state that this is a new system with no data migration required.)
-
-## 5. Integration and API Design
-
-### 5.1. API Endpoints (RESTful)
-
-(Define at least two key API endpoints. Specify the HTTP method, path, description, and example request/response bodies.)
-
-#### `METHOD /api/path`
-
-- **Description**: ...
-- **Request Body**: ...
-- **Response (200 OK)**: ...
-
-### 5.2. External Services/Integrations
-
-(List any third-party services that will be integrated, e.g., Stripe for payments, SendGrid for emails. Describe the purpose of each integration.)
-
-## 6. Security
-
-### 6.1. Authentication and Authorization
-
-(Describe the proposed strategy for user authentication and authorization. Recommend specific technologies, e.g., Supabase Auth, NextAuth.js, JWTs. Detail the user roles and permissions if applicable.)
-
-### 6.2. Security Considerations
-
-(List at least three specific security best practices relevant to the application, such as input validation, secrets management, data encryption (at rest and in transit), and dependency scanning.)
-
-## 7. Reporting and Analytics
-
-(Outline the approach for collecting, storing, and visualizing key application metrics and user data. Mention any specific reports or dashboards to be created and the tools for them, e.g., Google Analytics, custom dashboards with Chart.js.)
-
-## 8. Deployment and Operations
-
-### 8.1. CI/CD Pipeline
-
-(Outline a plan for Continuous Integration and Continuous Deployment. Recommend specific platforms or tools, e.g., Vercel, GitHub Actions.)
-
-### 8.2. Logging and Monitoring
-
-(Describe the strategy for logging application events and monitoring system health. Recommend specific tools, e.g., Sentry for error tracking, Prometheus/Grafana for performance monitoring.)
-
-## 9. Risks and Mitigations
-
-### 9.1. [Risk Category 1, e.g., Security]
-
-- **Risk**: (Describe a potential risk)
-- **Mitigation**: (Describe the strategy to mitigate this risk)
-
-### 9.2. [Risk Category 2, e.g., Scalability]
-
-- **Risk**: (Describe a potential risk)
-- **Mitigation**: (Describe the strategy to mitigate this risk)
-</ExampleTDD>
 """
 
 TDDGeneratorPrompt = PromptTemplate.from_template(TDD_PROMPT_TEMPLATE)
