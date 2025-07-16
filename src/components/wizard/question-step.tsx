@@ -30,7 +30,7 @@ export const QuestionStep = ({
             <>Select one choice.</>
           ) : (
             <>Select multiple choices.</>
-          )} If you don't see a relevant option here, you can mention it in the last step.
+          )} If you don&apos;t see a relevant option here, you can mention it in the last step.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
