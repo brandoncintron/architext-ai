@@ -16,30 +16,40 @@ export const QuestionStep = ({
   question,
   options,
   selection,
+  type,
   onSelectionChange,
 }: QuestionStepProps) => {
   return (
     <>
       <CardHeader>
-        <CardTitle className="text-2xl font-bold break-words">
+        <CardTitle className="text-2xl font-bold break-words cursor-default">
           {question}
         </CardTitle>
-        <CardDescription>
-          Your choice will help tailor the final architectural plan.
+        <CardDescription className="cursor-default">
+          {type === "single-choice" ? (
+            <>Select one choice.</>
+          ) : (
+            <>Select multiple choices.</>
+          )} If you don&apos;t see a relevant option here, you can mention it in the last step.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-          {options.map((option) => (
-            <Button
-              key={option}
-              variant={selection === option ? "default" : "outline"}
-              onClick={() => onSelectionChange(option)}
-              className="h-auto whitespace-normal sm:h-10 sm:whitespace-nowrap"
-            >
-              {option}
-            </Button>
-          ))}
+          {options.map((option) => {
+            const isSelected = Array.isArray(selection)
+              ? selection.includes(option)
+              : selection === option;
+            return (
+              <Button
+                key={option}
+                variant={isSelected ? "default" : "outline"}
+                onClick={() => onSelectionChange(option)}
+                className="h-auto w-full sm:w-auto whitespace-normal break-words text-left shrink"
+              >
+                {option}
+              </Button>
+            );
+          })}
         </div>
       </CardContent>
     </>

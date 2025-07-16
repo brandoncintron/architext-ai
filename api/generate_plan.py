@@ -16,7 +16,6 @@ async def generate_plan(payload: IdeaPayload):
     print(f"Received Idea: {payload.idea}")
     print(f"Received Platform: {payload.platform}")
 
-    # Step 1: Validate the user's input
     validator_chain = get_validator_chain()
     validation_result = await validator_chain.ainvoke({"user_idea": payload.idea, "platform": payload.platform})
 
@@ -26,16 +25,17 @@ async def generate_plan(payload: IdeaPayload):
     
     print("Validation successful, proceeding to generate questions.")
 
-    # Step 2: Generate the questions
     router_chain = get_router_chain()
 
-    # Invoke the chain with the user's idea.
     result = await router_chain.ainvoke(
         {"user_idea": payload.idea, "platform": payload.platform}
     )
 
-    print("\nAI-generated questions:")
+    print("\nAI-generated Q&A session:")
     for question in result.questions:
-        print(f"- {question.question}")
+        print(f"- {question.question}:")
+        for option in question.options:
+            print(f"  - {option}")
+
 
     return {"status": "success", "questions": [q.dict() for q in result.questions]}

@@ -55,6 +55,7 @@ export const Wizard = () => {
         <QuestionStep
           question={q.question}
           options={q.options}
+          type={q.type}
           selection={answers[index]}
           onSelectionChange={(option) => handleAnswerSelect(index, option)}
         />
@@ -79,6 +80,11 @@ export const Wizard = () => {
 
   const CurrentComponent = steps[currentStep].component;
 
+  const currentAnswer = answers[currentStep - 1];
+  const isCurrentQuestionUnanswered =
+    currentAnswer === null ||
+    (Array.isArray(currentAnswer) && currentAnswer.length === 0);
+
   if (isLastStep) {
     return CurrentComponent;
   }
@@ -97,7 +103,7 @@ export const Wizard = () => {
           <div className="flex flex-col items-center gap-4 text-center">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
             {isGenerating ? (
-              <div className="font-sans flex flex-col gap-4 items-center">
+              <div className="font-sans flex flex-col gap-4 items-center cursor-default">
                 <p>Generating your TDD, please wait...</p>
                 <GoogleGeminiLogo />
               </div>
@@ -108,7 +114,7 @@ export const Wizard = () => {
         ) : isFirstStep ? (
           CurrentComponent
         ) : (
-          <Card className="w-full max-w-2xl flex flex-col">
+          <Card className="w-full max-w-2xl flex flex-col whitespace-normal">
             {!isFirstStep && (
               <ProgressBar steps={steps} currentStep={currentStep} />
             )}
@@ -129,8 +135,8 @@ export const Wizard = () => {
                 }
                 disabled={
                   currentStep > 0 &&
-                    !answers[currentStep - 1] &&
-                    !isFinalClarificationStep
+                  !isFinalClarificationStep &&
+                  isCurrentQuestionUnanswered
                 }
                 size={isFinalClarificationStep ? "default" : "icon"}
               >

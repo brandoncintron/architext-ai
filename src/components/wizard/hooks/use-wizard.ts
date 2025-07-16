@@ -1,5 +1,9 @@
+/**
+ * @file This hook manages the state and logic for the multi-step wizard.
+ */
 import { useMemo, useState } from "react";
 
+import { generatePlan, generateTdd } from "@/components/wizard/actions/actions";
 import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/schema";
 import { Question } from "@/components/wizard/types/types";
 
@@ -10,7 +14,7 @@ export const useWizard = () => {
   const [initialFormValues, setInitialFormValues] =
     useState<InitialIdeaFormValues | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [answers, setAnswers] = useState<string[]>([]);
+  const [answers, setAnswers] = useState<(string | string[] | null)[]>([]);
   const [finalClarification, setFinalClarification] = useState("");
   const [generatedTDD, setGeneratedTDD] = useState("");
 
@@ -29,20 +33,9 @@ export const useWizard = () => {
     setError(null);
     setInitialFormValues(values);
     try {
-      const response = await fetch("/api/generate_plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Failed to generate questions.");
-      }
-
-      const data = await response.json();
+      const data = await generatePlan(values);
       setQuestions(data.questions);
-      setAnswers(new Array(data.questions.length).fill(""));
+      setAnswers(new Array(data.questions.length).fill(null));
       goToNextStep();
     } catch (error) {
       console.error(error);
@@ -59,31 +52,37 @@ export const useWizard = () => {
   };
 
   const handleAnswerSelect = (questionIndex: number, option: string) => {
-    const newAnswers = [...answers];
-    newAnswers[questionIndex] = option;
-    setAnswers(newAnswers);
+    setAnswers((prevAnswers) => {
+      const newAnswers = [...prevAnswers];
+      const question = questions[questionIndex];
+
+      if (question.type === "multi-choice") {
+        const currentSelection =
+          (newAnswers[questionIndex] as string[] | null) || [];
+        const selectionSet = new Set(currentSelection);
+        if (selectionSet.has(option)) {
+          selectionSet.delete(option);
+        } else {
+          selectionSet.add(option);
+        }
+        newAnswers[questionIndex] = Array.from(selectionSet);
+      } else {
+        newAnswers[questionIndex] = option;
+      }
+      return newAnswers;
+    });
   };
 
   const handleGenerateTDD = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/generate_tdd", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          initialFormValues,
-          questions,
-          answers,
-          finalClarification,
-        }),
+      const data = await generateTdd({
+        initialFormValues,
+        questions,
+        answers,
+        finalClarification,
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to generate TDD.");
-      }
-
-      const data = await response.json();
       setGeneratedTDD(data.tdd);
       goToNextStep();
     } catch (error) {
