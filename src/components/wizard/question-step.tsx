@@ -44,7 +44,7 @@ export const QuestionStep = ({
                 key={option}
                 variant={isSelected ? "default" : "outline"}
                 onClick={() => onSelectionChange(option)}
-                className="h-auto whitespace-normal text-wrap max-w-full"
+                className="h-auto w-full sm:w-auto whitespace-normal break-words text-left shrink"
               >
                 {option}
               </Button>
