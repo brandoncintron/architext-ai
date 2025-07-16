@@ -3,6 +3,7 @@
  */
 import { useMemo, useState } from "react";
 
+import { generatePlan, generateTdd } from "@/components/wizard/actions/actions";
 import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/schema";
 import { Question } from "@/components/wizard/types/types";
 
@@ -32,19 +33,7 @@ export const useWizard = () => {
     setError(null);
     setInitialFormValues(values);
     try {
-      const response = await fetch("http://localhost:8000/api/generate_plan", {
-        //signal: AbortSignal.timeout(60000),
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Failed to generate questions.");
-      }
-
-      const data = await response.json();
+      const data = await generatePlan(values);
       setQuestions(data.questions);
       setAnswers(new Array(data.questions.length).fill(null));
       goToNextStep();
@@ -88,23 +77,12 @@ export const useWizard = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://localhost:8000/api/generate_tdd",  {
-        //signal: AbortSignal.timeout(60000),
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          initialFormValues,
-          questions,
-          answers,
-          finalClarification,
-        }),
+      const data = await generateTdd({
+        initialFormValues,
+        questions,
+        answers,
+        finalClarification,
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to generate TDD.");
-      }
-
-      const data = await response.json();
       setGeneratedTDD(data.tdd);
       goToNextStep();
     } catch (error) {
