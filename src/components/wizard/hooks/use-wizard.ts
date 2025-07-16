@@ -32,7 +32,7 @@ export const useWizard = () => {
     setError(null);
     setInitialFormValues(values);
     try {
-      const response = await fetch("/api/generate_plan", {
+      const response = await fetch("http://localhost:8000/api/generate_plan", {
         //signal: AbortSignal.timeout(60000),
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -88,7 +88,7 @@ export const useWizard = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/generate_tdd",  {
+      const response = await fetch("http://localhost:8000/api/generate_tdd",  {
         //signal: AbortSignal.timeout(60000),
         method: "POST",
         headers: { "Content-Type": "application/json" },
