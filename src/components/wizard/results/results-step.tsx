@@ -161,7 +161,7 @@ export const ResultsStep = ({ tdd, onStartOver }: ResultsStepProps) => {
         <div className="mb-4 flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
           <div className="md:pr-4">
             <h1 className="text-lg font-semibold">
-              Technical Design Document Editor
+              Architext Markdown Editor
             </h1>
             <p className="text-sm text-muted-foreground">
               Review and edit the generated document. When you&apos;re ready,
