@@ -4,6 +4,8 @@ import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/sc
 export interface ResultsStepProps {
   tdd: string;
   onStartOver: () => void;
+  selectedModel: Model | null;
+  models: readonly any[];
 }
 
 // question-step.tsx
@@ -35,6 +37,35 @@ export interface FinalClarificationStepProps {
 export interface InitialIdeaStepProps {
   onSubmit: (values: InitialIdeaFormValues) => void;
   isSubmitting: boolean;
+}
+
+// model-selection-step.tsx
+export type Model = "gemini-2.0-flash" | "gemini-2.5-pro";
+
+export interface ModelSelectionStepProps {
+  onSelectModel: (model: Model) => void;
+  selectedModel: Model | null;
+}
+
+// wizard.tsx
+export interface WizardFooterProps {
+  isLoading: boolean;
+  isModelSelectionStep: boolean;
+  isFinalClarificationStep: boolean;
+  isQuestionStep: boolean;
+  isCurrentQuestionUnanswered: boolean;
+  selectedModel: Model | null;
+  isBackButtonDisabled: boolean;
+  models: readonly any[];
+  goToPreviousStep: () => void;
+  handleGeneratePlan: () => void;
+  handleGenerateTDD: () => void;
+  goToNextStep: () => void;
+}
+
+export interface LoadingIndicatorProps {
+  isGenerating: boolean;
+  selectedModel: Model | null;
 }
 
 // use-wizard.tsx
