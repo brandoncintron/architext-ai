@@ -40,7 +40,10 @@ export const ModelSelectionStep = ({
             }`}
             onClick={() => onSelectModel(model.name)}
           >
-            <h3 className="text-lg font-semibold">{model.title}</h3>
+            <h3 className="text-lg font-semibold flex items-center justify-center gap-2">
+              {model.icon}
+              {model.title}
+            </h3>
             <p className="text-sm text-muted-foreground mx-4">
               {model.description}
             </p>
