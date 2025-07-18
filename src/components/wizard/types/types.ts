@@ -4,6 +4,7 @@ interface ModelInfo {
   name: Model;
   title: string;
   description: string;
+  icon?: React.ReactNode;
 }
 
 // results-step.tsx
