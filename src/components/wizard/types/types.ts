@@ -73,6 +73,7 @@ export interface WizardFooterProps {
 export interface LoadingIndicatorProps {
   isGenerating: boolean;
   selectedModel: Model | null;
+  showLongLoadMessage: boolean;
 }
 
 // use-wizard.tsx
