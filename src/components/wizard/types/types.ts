@@ -1,11 +1,17 @@
 import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/schema";
 
+interface ModelInfo {
+  name: Model;
+  title: string;
+  description: string;
+}
+
 // results-step.tsx
 export interface ResultsStepProps {
   tdd: string;
   onStartOver: () => void;
   selectedModel: Model | null;
-  models: readonly any[];
+  models: readonly ModelInfo[];
 }
 
 // question-step.tsx
@@ -56,7 +62,7 @@ export interface WizardFooterProps {
   isCurrentQuestionUnanswered: boolean;
   selectedModel: Model | null;
   isBackButtonDisabled: boolean;
-  models: readonly any[];
+  models: readonly ModelInfo[];
   goToPreviousStep: () => void;
   handleGeneratePlan: () => void;
   handleGenerateTDD: () => void;

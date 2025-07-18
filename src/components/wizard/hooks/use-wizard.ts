@@ -132,7 +132,7 @@ export const useWizard = () => {
       setGeneratedTDD(data.tdd);
       goToNextStep();
     } catch (error) {
-      
+      console.error("Error in handleGenerateTDD:", error);
       setError("An error occurred while generating the TDD. Please try again.");
     } finally {
       setIsLoading(false);
