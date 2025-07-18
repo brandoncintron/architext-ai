@@ -136,6 +136,29 @@
   animation: pulse-scale 4s infinite;
 }
 
+/* Text Carousel/Swap Animation Classes */
+.text-carousel {
+  position: relative;
+}
+
+.text-carousel-item {
+  position: absolute;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.text-carousel-item.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.text-carousel-item.prev {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
 .markdown > * {
   all: revert;
 }

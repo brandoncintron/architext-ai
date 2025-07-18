@@ -9,7 +9,7 @@ import {
   validateIdea,
 } from "@/components/wizard/actions/actions";
 import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/schema";
-import { Model, Question } from "@/components/wizard/types/types";
+import { Model, Question, StepData } from "@/components/wizard/types/types";
 
 export const useWizard = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -22,25 +22,22 @@ export const useWizard = () => {
   const [answers, setAnswers] = useState<(string | string[] | null)[]>([]);
   const [finalClarification, setFinalClarification] = useState("");
   const [generatedTDD, setGeneratedTDD] = useState("");
-  const [showLongLoadMessage, setShowLongLoadMessage] = useState(false);
+  const [progressiveMessageIndex, setProgressiveMessageIndex] = useState(0);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-
     if (isLoading && selectedModel === "gemini-2.5-pro") {
-      timer = setTimeout(() => {
-        setShowLongLoadMessage(true);
-      }, 20000);
+      const intervals = [20000, 40000, 60000];
+      const timers = intervals.map((delay, index) => 
+        setTimeout(() => setProgressiveMessageIndex(index + 1), delay)
+      );
+      return () => timers.forEach(timer => clearTimeout(timer));
+    } else {
+      setProgressiveMessageIndex(0);
     }
-
-    return () => {
-      clearTimeout(timer);
-      setShowLongLoadMessage(false);
-    };
   }, [isLoading, selectedModel]);
 
-  const steps = useMemo(() => {
-    const dynamicQuestionSteps = questions.map((q, index) => ({
+  const steps = useMemo((): StepData[] => {
+    const dynamicQuestionSteps: StepData[] = questions.map((q, index) => ({
       id: `question-${index}`,
       name: `Question ${index + 1}`,
     }));
@@ -201,6 +198,6 @@ export const useWizard = () => {
     isFinalClarificationStep,
     isGenerating,
     isBackButtonDisabled,
-    showLongLoadMessage,
+    progressiveMessageIndex,
   };
 };

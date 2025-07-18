@@ -72,18 +72,13 @@ export const InitialIdeaStep = ({
                           className="absolute top-2.5 left-3 text-muted-foreground text-sm pointer-events-none w-[calc(100%-1.5rem)]"
                           aria-hidden="true"
                         >
-                          <div className="relative h-10 overflow-hidden">
+                          <div className="text-carousel h-10">
                             {placeholders.map((text, index) => (
                               <p
                                 key={text}
-                                className="absolute w-full transition-all duration-500 ease-in-out"
-                                style={{
-                                  transform: `translateY(${
-                                    (index - currentPlaceholderIndex) * 100
-                                  }%)`,
-                                  opacity:
-                                    index === currentPlaceholderIndex ? 1 : 0,
-                                }}
+                                className={`text-carousel-item ${
+                                  index === currentPlaceholderIndex ? "active" : ""
+                                }`}
                               >
                                 {text}
                               </p>
