@@ -1,7 +1,7 @@
 /**
  * @file This hook manages the state and logic for the multi-step wizard.
  */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   generatePlan,
@@ -22,6 +22,22 @@ export const useWizard = () => {
   const [answers, setAnswers] = useState<(string | string[] | null)[]>([]);
   const [finalClarification, setFinalClarification] = useState("");
   const [generatedTDD, setGeneratedTDD] = useState("");
+  const [showLongLoadMessage, setShowLongLoadMessage] = useState(false);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (isLoading && selectedModel === "gemini-2.5-pro") {
+      timer = setTimeout(() => {
+        setShowLongLoadMessage(true);
+      }, 20000);
+    }
+
+    return () => {
+      clearTimeout(timer);
+      setShowLongLoadMessage(false);
+    };
+  }, [isLoading, selectedModel]);
 
   const steps = useMemo(() => {
     const dynamicQuestionSteps = questions.map((q, index) => ({
@@ -185,5 +201,6 @@ export const useWizard = () => {
     isFinalClarificationStep,
     isGenerating,
     isBackButtonDisabled,
+    showLongLoadMessage,
   };
 };
