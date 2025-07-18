@@ -11,11 +11,13 @@ class TDDGenerationPayload(BaseModel):
     questions: List[Dict]
     answers: List[Optional[Union[str, List[str]]]]
     finalClarification: str
+    model: str
 
 
 @router.post("/generate_tdd")
 async def generate_tdd(payload: TDDGenerationPayload):
     print("Received payload for TDD generation")
+    print(f"Generating TDD with: {payload.model}")
 
     # Format the questions and answers for the prompt
     qa_pairs = []
@@ -32,7 +34,7 @@ async def generate_tdd(payload: TDDGenerationPayload):
     questions_and_answers = "\n".join(qa_pairs)
     print(questions_and_answers)
 
-    tdd_chain = get_tdd_chain()
+    tdd_chain = get_tdd_chain(model_name=payload.model)
 
     result = await tdd_chain.ainvoke(
         {
