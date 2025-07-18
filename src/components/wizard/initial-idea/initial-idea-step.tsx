@@ -24,7 +24,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useInitialIdeaForm } from "@/components/wizard/initial-idea/hooks/use-initial-idea-form";
 import { InitialIdeaStepProps } from "@/components/wizard/types/types";
 import { useEffect, useState } from "react";
-import { platforms, placeholders } from "@/components/wizard/initial-idea/utils/constants";
+import { platforms, placeholders } from "@/components/wizard/utils/constants";
+import { Loader2 } from "lucide-react";
 
 export const InitialIdeaStep = ({
   onSubmit,
@@ -41,7 +42,7 @@ export const InitialIdeaStep = ({
   }, []);
 
   return (
-    <Card className="w-full max-w-2xl h-full">
+    <>
       <CardHeader>
         <CardTitle className="text-2xl font-bold">
           Welcome to Architext AI
@@ -55,9 +56,9 @@ export const InitialIdeaStep = ({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6 md:space-y-0 flex flex-col flex-grow"
+          className="flex flex-col flex-grow justify-center gap-6 md:gap-3"
         >
-          <CardContent className="space-y-6 flex-grow">
+          <CardContent className="space-y-6">
             <FormField
               control={form.control}
               name="idea"
@@ -126,13 +127,20 @@ export const InitialIdeaStep = ({
               )}
             />
           </CardContent>
-          <CardFooter className="flex justify-end mt-auto">
+          <CardFooter className="flex justify-end">
             <Button type="submit" size="lg" disabled={isSubmitting}>
-              {isSubmitting ? "Generating..." : "Start Building"}
+              {isSubmitting ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Validating...</span>
+                </div>
+              ) : (
+                "Next"
+              )}
             </Button>
           </CardFooter>
         </form>
       </Form>
-    </Card>
+    </>
   );
 };
