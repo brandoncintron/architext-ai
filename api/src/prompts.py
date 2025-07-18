@@ -25,7 +25,7 @@ ROUTER_PROMPT_TEMPLATE = system_prompt + """
     </UserInput>
 
     <Instructions>
-        **IMPORTANT:** All questions must assume that the application is being developed and deployed within the United States and must conform to U.S. regulations and compliance requirements (e.g., HIPAA, CCPA, FedRAMP, COPPA, etc.) where applicable.
+        **IMPORTANT:** Do not ask about data compliance or regulatory standards unless the user's idea clearly involves sensitive, regulated, or protected data (such as healthcare, financial, or children's information). For most general or low-risk applications, you should not ask about compliance. When compliance is relevant, automatically assume the application must adhere to U.S. regulations (such as HIPAA, CCPA, COPPA, etc.) and instead, infer and apply the appropriate standards based on the project context.
         1. **Analyze Carefully:** Understand the user's idea and platform. Infer what's missing or ambiguous.
         2. **Ask Up to 5 Questions:** Focus on questions that surface critical architectural decisions the user may not have considered.
         3. **Use the Right Question Type:**
