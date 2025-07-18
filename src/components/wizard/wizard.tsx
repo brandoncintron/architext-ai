@@ -5,7 +5,8 @@
 
 import React, { useMemo } from "react";
 
-import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, RotateCcw } from "lucide-react";
+import { ClimbingBoxLoader } from "react-spinners";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter } from "@/components/ui/card";
@@ -24,25 +25,56 @@ import {
 } from "@/components/wizard/types/types";
 import { models } from "@/components/wizard/utils/constants";
 
+const AnimatedText = ({
+  texts,
+  currentIndex,
+}: {
+  texts: string[];
+  currentIndex: number;
+}) => (
+  <div className="relative h-4 text-xs text-muted-foreground">
+    {texts.map((text, index) => (
+      <p
+        key={text}
+        className="absolute w-full transition-all duration-500 ease-in-out"
+        style={{
+          transform: `translateY(${(index - currentIndex) * 100}%)`,
+          opacity: index === currentIndex ? 1 : 0,
+        }}
+      >
+        {text}
+      </p>
+    ))}
+  </div>
+);
+
 const LoadingIndicator = ({
   isGenerating,
   selectedModel,
+  showLongLoadMessage,
 }: LoadingIndicatorProps) => {
   const isProModel = selectedModel === "gemini-2.5-pro";
 
-  const proModelMessage = isGenerating ? (
+  const proModelMainMessage = isGenerating
+    ? "Generating your TDD, please wait..."
+    : "Analyzing your idea...";
+
+  const proModelSubMessages = [
+    isGenerating
+      ? "Gemini 2.5 Pro requires additional time to generate a TDD. Please wait."
+      : "Gemini 2.5 Pro requires additional time to analyze your idea. Please wait.",
+    "Still generating a response, please wait...",
+  ];
+
+  const currentSubMessageIndex = showLongLoadMessage ? 1 : 0;
+
+  const proModelMessage = (
     <div className="flex flex-col gap-2">
-      <span>Generating your TDD, please wait...</span>
-      <span className="text-xs text-muted-foreground">
-        Gemini 2.5 Pro requires more time to generate a TDD.
-      </span>
-    </div>
-  ) : (
-    <div className="flex flex-col gap-2">
-      <span>Analyzing your idea...</span>
-      <span className="text-xs text-muted-foreground">
-        Gemini 2.5 Pro requires more time to analyze your idea.
-      </span>
+      <span>{proModelMainMessage}</span>
+      <AnimatedText
+        texts={proModelSubMessages}
+        currentIndex={currentSubMessageIndex}
+      />
     </div>
   );
 
@@ -51,10 +83,10 @@ const LoadingIndicator = ({
     : "Analyzing your idea....";
 
   return (
-    <div className="flex flex-col items-center gap-4 text-center">
-      <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      <div className="font-sans flex flex-col gap-4 items-center cursor-default">
-        <p>{isProModel ? proModelMessage : standardMessage}</p>
+    <div className="flex flex-col items-center  text-center">
+      <ClimbingBoxLoader size={8} color="" />
+      <div className="font-sans flex flex-col items-center cursor-default">
+        <span>{isProModel ? proModelMessage : standardMessage}</span>
         {isGenerating && <GoogleGeminiLogo />}
       </div>
     </div>
@@ -152,6 +184,7 @@ export const Wizard = () => {
     isFinalClarificationStep,
     isGenerating,
     isBackButtonDisabled,
+    showLongLoadMessage,
   } = useWizard();
 
   const stepComponents = useMemo(
@@ -237,10 +270,21 @@ export const Wizard = () => {
   );
 
   return (
-    <div className="flex w-full flex-col items-center p-4 md:p-0">
-      <div className="w-full max-w-2xl">
+    <div className="flex w-full flex-col items-center p-4 md:p-0 max-w-2xl">
+
+      <div className="w-full">
         <ErrorAlert error={error || ""} />
       </div>
+
+
+      {isQuestionStep && (
+        <div className="flex items-end justify-end w-full mb-2">
+          <Button onClick={handleStartOver} size={"sm"}>
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Start Over
+          </Button>
+        </div>
+      )}
 
       <div className="flex w-full max-w-4xl justify-center items-center relative">
         <div className="absolute left-[-8rem] -z-10 h-[28.5rem] w-128 rounded-full bg-blue-500/40 blur-3xl md:left-[5rem]" />
@@ -248,9 +292,10 @@ export const Wizard = () => {
           <LoadingIndicator
             isGenerating={isGenerating}
             selectedModel={selectedModel}
+            showLongLoadMessage={showLongLoadMessage}
           />
         ) : (
-          <Card className="w-full h-full min-h-[350px] max-w-2xl flex flex-col whitespace-normal">
+          <Card className="w-full min-h-[440px] md:min-h-full h-full max-w-2xl flex flex-col whitespace-normal">
             {currentProgressStep !== -1 && (
               <ProgressBar
                 steps={progressBarSteps}
