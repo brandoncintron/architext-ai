@@ -30,6 +30,7 @@
     "react-hook-form": "^7.59.0",
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^3.0.3",
+    "react-spinners": "^0.17.0",
     "rehype-rewrite": "^4.0.2",
     "rehype-sanitize": "^6.0.0",
     "remark-gfm": "^4.0.0",
