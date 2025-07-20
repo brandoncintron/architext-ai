@@ -1,6 +1,7 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
+
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -32,11 +33,7 @@ export function ModeToggle() {
       onClick={toggleTheme}
       className="hover:bg-accent transition-colors"
     >
-      {theme === "dark" ? (
-        <Sun size={20} />
-      ) : (
-        <Moon size={20} />
-      )}
+      {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
     </Button>
   );
 }

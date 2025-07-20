@@ -42,14 +42,11 @@ export async function generatePlan(
   payload: InitialIdeaFormValues & { model: Model },
 ) {
   try {
-    const response = await fetch(
-      `${process.env.API_URL}/api/generate_plan`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      },
-    );
+    const response = await fetch(`${process.env.API_URL}/api/generate_plan`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -81,9 +78,9 @@ export async function generateTdd(payload: GenerateTddPayload) {
     return await response.json();
   } catch (error) {
     console.error("Error in generateTdd server action:", error);
-    
+
     throw new Error(
       "An error occurred while generating the TDD. Please try again.",
     );
   }
-} 
+}

@@ -271,11 +271,9 @@ export const Wizard = () => {
 
   return (
     <div className="flex w-full flex-col items-center p-4 md:p-0 max-w-2xl">
-
       <div className="w-full">
         <ErrorAlert error={error || ""} />
       </div>
-
 
       {isQuestionStep && (
         <div className="flex items-end justify-end w-full mb-2">

@@ -17,13 +17,10 @@ export const ModelSelectionStep = ({
   onSelectModel,
   selectedModel,
 }: ModelSelectionStepProps) => {
-
   return (
     <>
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">
-          Select a Model
-        </CardTitle>
+        <CardTitle className="text-2xl font-bold">Select a Model</CardTitle>
         <CardDescription>
           Select the model that best fits your project&apos;s complexity and
           desired output.

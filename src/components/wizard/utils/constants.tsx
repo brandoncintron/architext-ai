@@ -8,7 +8,8 @@ import { ZapIcon } from "@/components/ui/zap-icon";
 export const platforms = ["Web App", "Mobile App", "Desktop App"] as const;
 
 export const models = [
-  { // Update in types too
+  {
+    // Update in types too
     name: "gemini-2.0-flash",
     title: "Gemini 2.0 Flash",
     description:
@@ -29,4 +30,4 @@ export const placeholders = [
   "e.g., A platform for local artists to sell their work",
   "e.g., A mobile app for tracking personal fitness goals",
   "e.g., A tool to help manage and automate social media posts",
-]; 
+];

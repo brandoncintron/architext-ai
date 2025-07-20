@@ -10,12 +10,20 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { getCodeString } from "rehype-rewrite";
 
 import { EditorView } from "@codemirror/view";
-import { Check, Clipboard, Eye, Pencil, RotateCcw } from "lucide-react";
+import type { Element } from "hast";
+import {
+  Check,
+  Clipboard,
+  Eye,
+  Pencil,
+  RotateCcw,
+  Terminal,
+} from "lucide-react";
 import mermaid from "mermaid";
 import dynamic from "next/dynamic";
+import { getCodeString } from "rehype-rewrite";
 import rehypeSanitize from "rehype-sanitize";
 
 import { Button } from "@/components/ui/button";
@@ -27,8 +35,6 @@ import {
 import { useCopyToClipboard } from "@/components/wizard/results/hooks/use-copyto-clipboard";
 import { ResultsStepProps } from "@/components/wizard/types/types";
 import { useIsMobile } from "@/hooks/use-mobile";
-import type { Element } from 'hast';
-import { Terminal } from "lucide-react";
 
 const MarkdownEditor = dynamic(() => import("@uiw/react-markdown-editor"), {
   ssr: false,
@@ -168,9 +174,7 @@ export const ResultsStep = ({
       <div className="flex flex-col h-screen w-screen p-4 md:px-12 md:py-6">
         <div className="mb-4 flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
           <div className="md:pr-4">
-            <h1 className="text-lg font-semibold">
-              Architext Markdown Editor
-            </h1>
+            <h1 className="text-lg font-semibold">Architext Markdown Editor</h1>
             <p className="text-sm text-muted-foreground">
               Review and edit the generated document. When you&apos;re ready,
               copy it to your clipboard.

@@ -10,11 +10,11 @@ export const SiteActions = () => {
   return (
     <>
       <Button
-          variant="outline"
-          size="icon"
-          className="animate-pulse-scale rounded-full h-12 w-12 mr-5"
-          asChild
-        >
+        variant="outline"
+        size="icon"
+        className="animate-pulse-scale rounded-full h-12 w-12 mr-5"
+        asChild
+      >
         <a
           href="https://github.com/brandoncintron/architext-ai"
           target="_blank"
@@ -27,4 +27,4 @@ export const SiteActions = () => {
       <ModeToggle />
     </>
   );
-}; 
+};

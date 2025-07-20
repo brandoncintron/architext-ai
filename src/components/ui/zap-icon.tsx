@@ -30,4 +30,4 @@ export function ZapIcon({ className }: { className?: string }) {
       />
     </svg>
   );
-} 
+}
