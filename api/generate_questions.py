@@ -1,8 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from api.src.chains import get_router_chain
-from typing import List, Dict
-from fastapi import HTTPException
 
 router = APIRouter()
 
@@ -12,8 +10,8 @@ class IdeaPayload(BaseModel):
     model: str
 
 
-@router.post("/generate_plan")
-async def generate_plan(payload: IdeaPayload):
+@router.post("/generate_questions")
+async def generate_questions(payload: IdeaPayload):
     print(f"Received Idea: {payload.idea}")
     print(f"Received Platform: {payload.platform}")
     print(f"Received Model: {payload.model}")

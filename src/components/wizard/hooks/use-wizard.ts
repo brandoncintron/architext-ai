@@ -4,7 +4,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import {
-  generatePlan,
+  generateQuestions,
   generateTdd,
   validateIdea,
 } from "@/components/wizard/actions/actions";
@@ -83,14 +83,14 @@ export const useWizard = () => {
     setSelectedModel(model);
   };
 
-  const handleGeneratePlan = async () => {
+  const handleGenerateQuestions = async () => {
     setIsLoading(true);
     setError(null);
     try {
       if (!initialFormValues || !selectedModel) {
         throw new Error("Initial values or model not selected.");
       }
-      const data = await generatePlan({
+      const data = await generateQuestions({
         ...initialFormValues,
         model: selectedModel,
       });
@@ -187,7 +187,7 @@ export const useWizard = () => {
     steps,
     handleInitialSubmit,
     handleModelSelect,
-    handleGeneratePlan,
+    handleGenerateQuestions,
     handleAnswerSelect,
     handleGenerateTDD,
     handleStartOver,

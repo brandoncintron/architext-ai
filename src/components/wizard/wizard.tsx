@@ -29,7 +29,7 @@ const WizardFooter = ({
   isCurrentQuestionUnanswered,
   selectedModel,
   goToPreviousStep,
-  handleGeneratePlan,
+  handleGenerateQuestions,
   handleGenerateTDD,
   goToNextStep,
   isBackButtonDisabled,
@@ -60,7 +60,7 @@ const WizardFooter = ({
       {isModelSelectionStep ? (
         <Button
           variant="default"
-          onClick={handleGeneratePlan}
+          onClick={handleGenerateQuestions}
           disabled={!selectedModel || isLoading}
           size="default"
         >
@@ -100,7 +100,7 @@ export const Wizard = () => {
     steps,
     handleInitialSubmit,
     handleModelSelect,
-    handleGeneratePlan,
+    handleGenerateQuestions,
     handleAnswerSelect,
     handleGenerateTDD,
     handleStartOver,
@@ -240,7 +240,7 @@ export const Wizard = () => {
                 isBackButtonDisabled={isBackButtonDisabled}
                 models={models}
                 goToPreviousStep={goToPreviousStep}
-                handleGeneratePlan={handleGeneratePlan}
+                handleGenerateQuestions={handleGenerateQuestions}
                 handleGenerateTDD={handleGenerateTDD}
                 goToNextStep={goToNextStep}
               />

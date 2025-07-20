@@ -38,11 +38,11 @@ export async function validateIdea(payload: InitialIdeaFormValues) {
   }
 }
 
-export async function generatePlan(
+export async function generateQuestions(
   payload: InitialIdeaFormValues & { model: Model },
 ) {
   try {
-    const response = await fetch(`${process.env.API_URL}/api/generate_plan`, {
+    const response = await fetch(`${process.env.API_URL}/api/generate_questions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -55,11 +55,11 @@ export async function generatePlan(
 
     return await response.json();
   } catch (error) {
-    console.error("Error in generatePlan server action:", error);
+    console.error("Error in generateQuestions server action:", error);
     if (error instanceof Error) {
       throw new Error(error.message);
     }
-    throw new Error("An unknown error occurred while generating the plan.");
+    throw new Error("An unknown error occurred while generating the questions.");
   }
 }
 

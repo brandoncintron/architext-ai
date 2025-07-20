@@ -65,7 +65,7 @@ export interface WizardFooterProps {
   isBackButtonDisabled: boolean;
   models: readonly ModelInfo[];
   goToPreviousStep: () => void;
-  handleGeneratePlan: () => void;
+  handleGenerateQuestions: () => void;
   handleGenerateTDD: () => void;
   goToNextStep: () => void;
 }
