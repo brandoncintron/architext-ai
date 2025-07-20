@@ -6,92 +6,20 @@
 import React, { useMemo } from "react";
 
 import { ArrowLeft, ArrowRight, RotateCcw } from "lucide-react";
-import { ClimbingBoxLoader } from "react-spinners";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter } from "@/components/ui/card";
 import ErrorAlert from "@/components/ui/error-alert";
-import { GoogleGeminiLogo } from "@/components/ui/google-gemini-logo";
 import { FinalClarificationStep } from "@/components/wizard/final-clarification-step";
 import { useWizard } from "@/components/wizard/hooks/use-wizard";
 import { InitialIdeaStep } from "@/components/wizard/initial-idea/initial-idea-step";
+import { LoadingIndicator } from "@/components/wizard/loading-indicator";
 import { ModelSelectionStep } from "@/components/wizard/model-selection-step";
 import { ProgressBar } from "@/components/wizard/progress-bar";
 import { QuestionStep } from "@/components/wizard/question-step";
 import { ResultsStep } from "@/components/wizard/results/results-step";
-import {
-  LoadingIndicatorProps,
-  WizardFooterProps,
-} from "@/components/wizard/types/types";
+import { WizardFooterProps } from "@/components/wizard/types/types";
 import { models } from "@/components/wizard/utils/constants";
-
-const AnimatedText = ({
-  texts,
-  currentIndex,
-}: {
-  texts: string[];
-  currentIndex: number;
-}) => (
-  <div className="relative h-4 text-xs text-muted-foreground">
-    {texts.map((text, index) => (
-      <p
-        key={text}
-        className="absolute w-full transition-all duration-500 ease-in-out"
-        style={{
-          transform: `translateY(${(index - currentIndex) * 100}%)`,
-          opacity: index === currentIndex ? 1 : 0,
-        }}
-      >
-        {text}
-      </p>
-    ))}
-  </div>
-);
-
-const LoadingIndicator = ({
-  isGenerating,
-  selectedModel,
-  showLongLoadMessage,
-}: LoadingIndicatorProps) => {
-  const isProModel = selectedModel === "gemini-2.5-pro";
-
-  const proModelMainMessage = isGenerating
-    ? "Generating your TDD, please wait..."
-    : "Analyzing your idea...";
-
-  const proModelSubMessages = [
-    isGenerating
-      ? "Gemini 2.5 Pro requires additional time to generate a TDD. Please wait."
-      : "Gemini 2.5 Pro requires additional time to analyze your idea. Please wait.",
-    "Still generating a response, please wait...",
-  ];
-
-  const currentSubMessageIndex = showLongLoadMessage ? 1 : 0;
-
-  const proModelMessage = (
-    <div className="flex flex-col gap-2">
-      <span>{proModelMainMessage}</span>
-      <AnimatedText
-        texts={proModelSubMessages}
-        currentIndex={currentSubMessageIndex}
-      />
-    </div>
-  );
-
-  const standardMessage = isGenerating
-    ? "Generating your TDD, please wait...."
-    : "Analyzing your idea....";
-
-  return (
-    <div className="flex flex-col items-center  text-center">
-      <ClimbingBoxLoader size={8} color="" />
-      <div className="font-sans flex flex-col items-center cursor-default">
-        <span>{isProModel ? proModelMessage : standardMessage}</span>
-        {isGenerating && <GoogleGeminiLogo />}
-      </div>
-    </div>
-  );
-};
 
 const WizardFooter = ({
   isLoading,
@@ -184,7 +112,7 @@ export const Wizard = () => {
     isFinalClarificationStep,
     isGenerating,
     isBackButtonDisabled,
-    showLongLoadMessage,
+    cycleMessageIndex,
   } = useWizard();
 
   const stepComponents = useMemo(
@@ -290,7 +218,7 @@ export const Wizard = () => {
           <LoadingIndicator
             isGenerating={isGenerating}
             selectedModel={selectedModel}
-            showLongLoadMessage={showLongLoadMessage}
+            cycleMessageIndex={cycleMessageIndex}
           />
         ) : (
           <Card className="w-full min-h-[440px] md:min-h-full h-full max-w-2xl flex flex-col whitespace-normal">
