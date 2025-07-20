@@ -3,6 +3,10 @@
  */
 "use client";
 
+import { useEffect, useState } from "react";
+
+import { Loader2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   CardContent,
@@ -22,9 +26,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useInitialIdeaForm } from "@/components/wizard/initial-idea/hooks/use-initial-idea-form";
 import { InitialIdeaStepProps } from "@/components/wizard/types/types";
-import { useEffect, useState } from "react";
-import { platforms, placeholders } from "@/components/wizard/utils/constants";
-import { Loader2 } from "lucide-react";
+import { placeholders, platforms } from "@/components/wizard/utils/constants";
 
 export const InitialIdeaStep = ({
   onSubmit,
@@ -36,7 +38,7 @@ export const InitialIdeaStep = ({
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(timer);
   }, []);
 
@@ -72,18 +74,15 @@ export const InitialIdeaStep = ({
                           className="absolute top-2.5 left-3 text-muted-foreground text-sm pointer-events-none w-[calc(100%-1.5rem)]"
                           aria-hidden="true"
                         >
-                          <div className="relative h-10 overflow-hidden">
+                          <div className="text-carousel h-10">
                             {placeholders.map((text, index) => (
                               <p
                                 key={text}
-                                className="absolute w-full transition-all duration-500 ease-in-out"
-                                style={{
-                                  transform: `translateY(${
-                                    (index - currentPlaceholderIndex) * 100
-                                  }%)`,
-                                  opacity:
-                                    index === currentPlaceholderIndex ? 1 : 0,
-                                }}
+                                className={`text-carousel-item ${
+                                  index === currentPlaceholderIndex
+                                    ? "active"
+                                    : ""
+                                }`}
                               >
                                 {text}
                               </p>
