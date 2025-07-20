@@ -22,21 +22,18 @@ export const useWizard = () => {
   const [answers, setAnswers] = useState<(string | string[] | null)[]>([]);
   const [finalClarification, setFinalClarification] = useState("");
   const [generatedTDD, setGeneratedTDD] = useState("");
-  const [showLongLoadMessage, setShowLongLoadMessage] = useState(false);
+  const [cycleMessageIndex, setCycleMessageIndex] = useState(0);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-
     if (isLoading && selectedModel === "gemini-2.5-pro") {
-      timer = setTimeout(() => {
-        setShowLongLoadMessage(true);
-      }, 20000);
+      const intervals = [20000, 40000, 60000];
+      const timers = intervals.map((delay, index) =>
+        setTimeout(() => setCycleMessageIndex(index + 1), delay),
+      );
+      return () => timers.forEach((timer) => clearTimeout(timer));
+    } else {
+      setCycleMessageIndex(0);
     }
-
-    return () => {
-      clearTimeout(timer);
-      setShowLongLoadMessage(false);
-    };
   }, [isLoading, selectedModel]);
 
   const steps = useMemo(() => {
@@ -72,7 +69,6 @@ export const useWizard = () => {
       setInitialFormValues(values);
       goToNextStep();
     } catch (error) {
-      
       if (error instanceof Error) {
         setError(error.message);
       } else {
@@ -94,12 +90,14 @@ export const useWizard = () => {
       if (!initialFormValues || !selectedModel) {
         throw new Error("Initial values or model not selected.");
       }
-      const data = await generatePlan({ ...initialFormValues, model: selectedModel });
+      const data = await generatePlan({
+        ...initialFormValues,
+        model: selectedModel,
+      });
       setQuestions(data.questions);
       setAnswers(new Array(data.questions.length).fill(null));
       goToNextStep();
     } catch (error) {
-      
       if (error instanceof Error) {
         setError(error.message);
       } else {
@@ -201,6 +199,6 @@ export const useWizard = () => {
     isFinalClarificationStep,
     isGenerating,
     isBackButtonDisabled,
-    showLongLoadMessage,
+    cycleMessageIndex,
   };
 };
