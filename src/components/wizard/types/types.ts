@@ -70,9 +70,11 @@ export interface WizardFooterProps {
   goToNextStep: () => void;
 }
 
+// loading-indicator.tsx
 export interface LoadingIndicatorProps {
   isGenerating: boolean;
   selectedModel: Model | null;
+  cycleMessageIndex: number;
 }
 
 // use-wizard.tsx
