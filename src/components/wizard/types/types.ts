@@ -1,11 +1,7 @@
 import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/schema";
+import { models } from "@/components/wizard/utils/constants";
 
-interface ModelInfo {
-  name: Model;
-  title: string;
-  description: string;
-  icon?: React.ReactNode;
-}
+type ModelInfo = typeof models[number];
 
 // results-step.tsx
 export interface ResultsStepProps {
@@ -47,7 +43,7 @@ export interface InitialIdeaStepProps {
 }
 
 // model-selection-step.tsx
-export type Model = "gemini-2.0-flash" | "gemini-2.5-pro";
+export type Model = (typeof models)[number]["name"];
 
 export interface ModelSelectionStepProps {
   onSelectModel: (model: Model) => void;
@@ -82,4 +78,12 @@ export type Question = {
   type: "single-choice" | "multi-choice";
   question: string;
   options: string[];
+};
+
+export type GenerateTddPayload = {
+  initialFormValues: InitialIdeaFormValues | null;
+  questions: Question[];
+  answers: (string | string[] | null)[];
+  finalClarification: string;
+  model: Model | null;
 };
