@@ -153,17 +153,6 @@ export const useWizard = () => {
     }
   };
 
-  const handleStartOver = () => {
-    setCurrentStep(0);
-    setInitialFormValues(null);
-    setQuestions([]);
-    setAnswers([]);
-    setFinalClarification("");
-    setGeneratedTDD("");
-    setIsLoading(false);
-    setSelectedModel(null);
-  };
-
   const currentStepData = steps[currentStep];
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === totalSteps - 1;
@@ -190,7 +179,6 @@ export const useWizard = () => {
     handleGenerateQuestions,
     handleAnswerSelect,
     handleGenerateTDD,
-    handleStartOver,
     goToPreviousStep,
     goToNextStep,
     isLastStep,

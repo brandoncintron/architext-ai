@@ -6,7 +6,6 @@ type ModelInfo = typeof models[number];
 // results-step.tsx
 export interface ResultsStepProps {
   tdd: string;
-  onStartOver: () => void;
   selectedModel: Model | null;
   models: readonly ModelInfo[];
 }

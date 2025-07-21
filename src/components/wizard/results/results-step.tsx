@@ -111,7 +111,6 @@ const Code = ({
 
 export const ResultsStep = ({
   tdd,
-  onStartOver,
   selectedModel,
   models,
 }: ResultsStepProps) => {
@@ -189,7 +188,11 @@ export const ResultsStep = ({
             </div>
           </div>
           <div className="flex w-full flex-wrap items-center justify-center gap-2 space-x-2 md:w-auto md:flex-shrink-0 md:justify-start">
-            <Button onClick={onStartOver}>
+            <Button
+              onClick={() => {
+                window.location.reload();
+              }}
+            >
               <RotateCcw className="mr-2 h-4 w-4" />
               Start Over
             </Button>

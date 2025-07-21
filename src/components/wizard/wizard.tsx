@@ -103,7 +103,6 @@ export const Wizard = () => {
     handleGenerateQuestions,
     handleAnswerSelect,
     handleGenerateTDD,
-    handleStartOver,
     goToPreviousStep,
     goToNextStep,
     isLastStep,
@@ -153,7 +152,6 @@ export const Wizard = () => {
       results: (
         <ResultsStep
           tdd={generatedTDD}
-          onStartOver={handleStartOver}
           selectedModel={selectedModel}
           models={models}
         />
@@ -166,7 +164,6 @@ export const Wizard = () => {
       handleAnswerSelect,
       handleInitialSubmit,
       handleModelSelect,
-      handleStartOver,
       isLoading,
       questions,
       selectedModel,
@@ -205,7 +202,12 @@ export const Wizard = () => {
 
       {isQuestionStep && (
         <div className="flex items-end justify-end w-full mb-2">
-          <Button onClick={handleStartOver} size={"sm"}>
+          <Button
+            onClick={() => {
+              window.location.reload();
+            }}
+            size={"sm"}
+          >
             <RotateCcw className="mr-2 h-4 w-4" />
             Start Over
           </Button>
