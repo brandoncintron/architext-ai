@@ -3,6 +3,28 @@ import { models } from "@/components/wizard/utils/constants";
 
 type ModelInfo = typeof models[number];
 
+// step-router.tsx
+export interface StepData {
+  id: string;
+  name: string;
+}
+
+export interface StepRouterProps {
+  currentStepData: StepData;
+  questions: Question[];
+  answers: (string | string[] | null)[];
+  finalClarification: string;
+  setFinalClarification: (value: string) => void;
+  generatedTDD: string;
+  selectedModel: Model | null;
+  models: readonly ModelInfo[];
+  isLoading: boolean;
+  onInitialSubmit: (values: InitialIdeaFormValues) => void;
+  onModelSelect: (model: Model) => void;
+  onAnswerSelect: (questionIndex: number, option: string) => void;
+  onStartOver: () => void;
+}
+
 // results-step.tsx
 export interface ResultsStepProps {
   tdd: string;

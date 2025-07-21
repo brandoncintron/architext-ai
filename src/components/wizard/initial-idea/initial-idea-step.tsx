@@ -79,9 +79,7 @@ export const InitialIdeaStep = ({
                               <p
                                 key={text}
                                 className={`text-carousel-item ${
-                                  index === currentPlaceholderIndex
-                                    ? "active"
-                                    : ""
+                                  index === currentPlaceholderIndex ? "active" : ""
                                 }`}
                               >
                                 {text}

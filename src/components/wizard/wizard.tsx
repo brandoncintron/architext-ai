@@ -3,12 +3,11 @@
  */
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 
 import { ArrowLeft, ArrowRight, RotateCcw } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
-import { Card, CardFooter } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import ErrorAlert from "@/components/ui/error-alert";
 import { FinalClarificationStep } from "@/components/wizard/final-clarification-step";
 import { useWizard } from "@/components/wizard/hooks/use-wizard";
@@ -106,7 +105,6 @@ export const Wizard = () => {
     handleStartOver,
     goToPreviousStep,
     goToNextStep,
-    isLastStep,
     isFirstStep,
     isModelSelectionStep,
     isFinalClarificationStep,
@@ -115,81 +113,37 @@ export const Wizard = () => {
     cycleMessageIndex,
   } = useWizard();
 
-  const stepComponents = useMemo(
-    () => ({
-      "initial-idea": (
-        <InitialIdeaStep
-          onSubmit={handleInitialSubmit}
-          isSubmitting={isLoading}
-        />
-      ),
-      "model-selection": (
-        <ModelSelectionStep
-          onSelectModel={handleModelSelect}
-          selectedModel={selectedModel}
-        />
-      ),
-      ...questions.reduce(
-        (acc, q, index) => {
-          acc[`question-${index}`] = (
-            <QuestionStep
-              question={q.question}
-              options={q.options}
-              type={q.type}
-              selection={answers[index]}
-              onSelectionChange={(option) => handleAnswerSelect(index, option)}
-            />
-          );
-          return acc;
-        },
-        {} as Record<string, React.ReactNode>,
-      ),
-      "final-clarification": (
-        <FinalClarificationStep
-          value={finalClarification}
-          onChange={setFinalClarification}
-        />
-      ),
-      results: (
-        <ResultsStep
-          tdd={generatedTDD}
-          onStartOver={handleStartOver}
-          selectedModel={selectedModel}
-          models={models}
-        />
-      ),
-    }),
-    [
-      answers,
-      finalClarification,
-      generatedTDD,
-      handleAnswerSelect,
-      handleInitialSubmit,
-      handleModelSelect,
-      handleStartOver,
-      isLoading,
-      questions,
-      selectedModel,
-      setFinalClarification,
-    ],
+  const currentStepData = steps[currentStep];
+  const stepTypeInfo = getStepTypeInfo(currentStepData?.id || "");
+  
+  const isCurrentQuestionAnswerIncomplete = isCurrentQuestionUnanswered(
+    currentStepData,
+    questions,
+    answers
   );
 
-  const currentStepData = steps[currentStep];
-  const CurrentComponent =
-    stepComponents[currentStepData?.id as keyof typeof stepComponents];
-
-  const questionStepIndex = currentStep - 2;
-  const currentAnswer = answers[questionStepIndex];
-  const isCurrentQuestionUnanswered =
-    currentAnswer === null ||
-    (Array.isArray(currentAnswer) && currentAnswer.length === 0);
-
-  const isQuestionStep = currentStepData?.id.startsWith("question-");
-
-  if (isLastStep) {
-    return CurrentComponent;
+  // Early return for results step - render without card wrapper
+  if (stepTypeInfo.isResultsStep) {
+    return (
+      <StepRouter
+        currentStepData={currentStepData}
+        questions={questions}
+        answers={answers}
+        finalClarification={finalClarification}
+        setFinalClarification={setFinalClarification}
+        generatedTDD={generatedTDD}
+        selectedModel={selectedModel}
+        models={models}
+        isLoading={isLoading}
+        onInitialSubmit={handleInitialSubmit}
+        onModelSelect={handleModelSelect}
+        onAnswerSelect={handleAnswerSelect}
+        onStartOver={handleStartOver}
+      />
+    );
   }
 
+  // Get steps for progress bar (only question steps)
   const progressBarSteps = steps.filter((step) =>
     step.id.startsWith("question-"),
   );
@@ -214,6 +168,7 @@ export const Wizard = () => {
 
       <div className="flex w-full max-w-4xl justify-center items-center relative">
         <div className="absolute left-[-8rem] -z-10 h-[28.5rem] w-128 rounded-full bg-blue-500/40 blur-3xl md:left-[5rem]" />
+        
         {isLoading && (isModelSelectionStep || isGenerating) ? (
           <LoadingIndicator
             isGenerating={isGenerating}
@@ -228,14 +183,30 @@ export const Wizard = () => {
                 currentStep={currentProgressStep}
               />
             )}
-            {CurrentComponent}
+            
+            <StepRouter
+              currentStepData={currentStepData}
+              questions={questions}
+              answers={answers}
+              finalClarification={finalClarification}
+              setFinalClarification={setFinalClarification}
+              generatedTDD={generatedTDD}
+              selectedModel={selectedModel}
+              models={models}
+              isLoading={isLoading}
+              onInitialSubmit={handleInitialSubmit}
+              onModelSelect={handleModelSelect}
+              onAnswerSelect={handleAnswerSelect}
+              onStartOver={handleStartOver}
+            />
+            
             {!isFirstStep && (
               <WizardFooter
                 isLoading={isLoading}
                 isModelSelectionStep={isModelSelectionStep}
                 isFinalClarificationStep={isFinalClarificationStep}
-                isQuestionStep={isQuestionStep}
-                isCurrentQuestionUnanswered={isCurrentQuestionUnanswered}
+                isQuestionStep={stepTypeInfo.isQuestionStep}
+                isCurrentQuestionUnanswered={isCurrentQuestionAnswerIncomplete}
                 selectedModel={selectedModel}
                 isBackButtonDisabled={isBackButtonDisabled}
                 models={models}

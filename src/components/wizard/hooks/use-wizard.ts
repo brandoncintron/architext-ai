@@ -9,7 +9,7 @@ import {
   validateIdea,
 } from "@/components/wizard/actions/actions";
 import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/schema";
-import { Model, Question } from "@/components/wizard/types/types";
+import { Model, Question, StepData } from "@/components/wizard/types/types";
 
 export const useWizard = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -27,6 +27,7 @@ export const useWizard = () => {
   useEffect(() => {
     if (isLoading && selectedModel === "gemini-2.5-pro") {
       const intervals = [20000, 40000, 60000];
+
       const timers = intervals.map((delay, index) =>
         setTimeout(() => setCycleMessageIndex(index + 1), delay),
       );
@@ -36,8 +37,8 @@ export const useWizard = () => {
     }
   }, [isLoading, selectedModel]);
 
-  const steps = useMemo(() => {
-    const dynamicQuestionSteps = questions.map((q, index) => ({
+  const steps = useMemo((): StepData[] => {
+    const dynamicQuestionSteps: StepData[] = questions.map((q, index) => ({
       id: `question-${index}`,
       name: `Question ${index + 1}`,
     }));

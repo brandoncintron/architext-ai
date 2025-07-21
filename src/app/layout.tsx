@@ -30,7 +30,7 @@ export default function RootLayout({
         <main className="flex h-screen flex-col overflow-x-hidden">
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
