@@ -1,19 +1,11 @@
 "use server";
 
 import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/schema";
-import { Model, Question } from "@/components/wizard/types/types";
+import { GenerateTddPayload, Model } from "@/components/wizard/types/types";
 
 /**
  * @file This file contains server-side actions for the wizard.
  */
-
-type GenerateTddPayload = {
-  initialFormValues: InitialIdeaFormValues | null;
-  questions: Question[];
-  answers: (string | string[] | null)[];
-  finalClarification: string;
-  model: Model | null;
-};
 
 export async function validateIdea(payload: InitialIdeaFormValues) {
   try {
@@ -42,11 +34,14 @@ export async function generateQuestions(
   payload: InitialIdeaFormValues & { model: Model },
 ) {
   try {
-    const response = await fetch(`${process.env.API_URL}/api/generate_questions`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    const response = await fetch(
+      `${process.env.API_URL}/api/generate_questions`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      },
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -59,7 +54,9 @@ export async function generateQuestions(
     if (error instanceof Error) {
       throw new Error(error.message);
     }
-    throw new Error("An unknown error occurred while generating the questions.");
+    throw new Error(
+      "An unknown error occurred while generating the questions.",
+    );
   }
 }
 
