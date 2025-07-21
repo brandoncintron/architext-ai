@@ -9,7 +9,6 @@ export const platforms = ["Web App", "Mobile App", "Desktop App"] as const;
 
 export const models = [
   {
-    // Update in types too
     name: "gemini-2.0-flash",
     title: "Gemini 2.0 Flash",
     description:
