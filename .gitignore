@@ -47,6 +47,7 @@ next-env.d.ts
 # project docs
 PRD.md
 DD.txt
+examples.md
 /.cursor/
 
 # python
