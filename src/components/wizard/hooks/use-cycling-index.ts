@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 import { Model } from "@/components/wizard/types/types";
-import { models } from "@/components/wizard/utils/constants";
 
 export const useCyclingIndex = ({
   isLoading,

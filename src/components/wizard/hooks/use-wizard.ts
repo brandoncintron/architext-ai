@@ -1,7 +1,7 @@
 /**
  * @file This hook manages the state and logic for the multi-step wizard.
  */
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
   generateQuestions,
