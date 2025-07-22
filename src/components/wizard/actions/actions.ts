@@ -1,6 +1,6 @@
 "use server";
 
-import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/schema";
+import { InitialIdeaFormValues } from "@/components/wizard/steps/initial-idea/utils/schema";
 import { GenerateTddPayload, Model } from "@/components/wizard/types/types";
 
 /**

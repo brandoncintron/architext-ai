@@ -8,7 +8,7 @@ import {
   generateTdd,
   validateIdea,
 } from "@/components/wizard/actions/actions";
-import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/schema";
+import { InitialIdeaFormValues } from "@/components/wizard/steps/initial-idea/utils/schema";
 import { Model, Question } from "@/components/wizard/types/types";
 
 export const useWizard = () => {

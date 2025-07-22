@@ -1,4 +1,4 @@
-import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/schema";
+import { InitialIdeaFormValues } from "@/components/wizard/steps/initial-idea/utils/schema";
 import { models } from "@/components/wizard/utils/constants";
 
 type ModelInfo = typeof models[number];
