@@ -24,6 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { AnimatedText } from "@/components/wizard/animated-text";
 import { useInitialIdeaForm } from "@/components/wizard/steps/initial-idea/hooks/use-initial-idea-form";
 import { InitialIdeaStepProps } from "@/components/wizard/types/types";
 import { placeholders, platforms } from "@/components/wizard/utils/constants";
@@ -74,19 +75,11 @@ export const InitialIdeaStep = ({
                           className="absolute top-2.5 left-3 text-muted-foreground text-sm pointer-events-none w-[calc(100%-1.5rem)]"
                           aria-hidden="true"
                         >
-                          <div className="text-carousel h-10">
-                            {placeholders.map((text, index) => (
-                              <p
-                                key={text}
-                                className={`text-carousel-item ${
-                                  index === currentPlaceholderIndex
-                                    ? "active"
-                                    : ""
-                                }`}
-                              >
-                                {text}
-                              </p>
-                            ))}
+                          <div className="h-10">
+                            <AnimatedText 
+                            texts={placeholders} 
+                            currentIndex={currentPlaceholderIndex}
+                            />
                           </div>
                         </div>
                       )}
