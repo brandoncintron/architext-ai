@@ -24,7 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { useInitialIdeaForm } from "@/components/wizard/initial-idea/hooks/use-initial-idea-form";
+import { useInitialIdeaForm } from "@/components/wizard/steps/initial-idea/hooks/use-initial-idea-form";
 import { InitialIdeaStepProps } from "@/components/wizard/types/types";
 import { placeholders, platforms } from "@/components/wizard/utils/constants";
 
