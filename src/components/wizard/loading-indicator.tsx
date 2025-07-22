@@ -27,7 +27,6 @@ export const LoadingIndicator = ({
     "Just a few more moments...", // [3]
   ];
 
-  // Use progressive index, clamped to available messages
   const currentSubMessageIndex = isProModel
     ? Math.min(cycleMessageIndex, proModelSubMessages.length - 1)
     : 0;
