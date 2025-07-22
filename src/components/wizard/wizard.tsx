@@ -5,86 +5,21 @@
 
 import React, { useMemo } from "react";
 
-import { ArrowLeft, ArrowRight, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardFooter } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import ErrorAlert from "@/components/ui/error-alert";
-import { FinalClarificationStep } from "@/components/wizard/final-clarification-step";
 import { useWizard } from "@/components/wizard/hooks/use-wizard";
-import { InitialIdeaStep } from "@/components/wizard/initial-idea/initial-idea-step";
 import { LoadingIndicator } from "@/components/wizard/loading-indicator";
-import { ModelSelectionStep } from "@/components/wizard/model-selection-step";
 import { ProgressBar } from "@/components/wizard/progress-bar";
-import { QuestionStep } from "@/components/wizard/question-step";
-import { ResultsStep } from "@/components/wizard/results/results-step";
-import { WizardFooterProps } from "@/components/wizard/types/types";
+import { FinalClarificationStep } from "@/components/wizard/steps/final-clarification-step";
+import { InitialIdeaStep } from "@/components/wizard/steps/initial-idea/initial-idea-step";
+import { ModelSelectionStep } from "@/components/wizard/steps/model-selection-step";
+import { QuestionStep } from "@/components/wizard/steps/question-step";
+import { ResultsStep } from "@/components/wizard/steps/results/results-step";
 import { models } from "@/components/wizard/utils/constants";
-
-const WizardFooter = ({
-  isLoading,
-  isModelSelectionStep,
-  isFinalClarificationStep,
-  isQuestionStep,
-  isCurrentQuestionUnanswered,
-  selectedModel,
-  goToPreviousStep,
-  handleGenerateQuestions,
-  handleGenerateTDD,
-  goToNextStep,
-  isBackButtonDisabled,
-  models,
-}: WizardFooterProps) => {
-  const selectedModelTitle =
-    models.find((m) => m.name === selectedModel)?.title || "";
-
-  return (
-    <CardFooter className="flex justify-between items-center mt-auto">
-      {!isBackButtonDisabled ? (
-        <Button variant="outline" onClick={goToPreviousStep} size="icon">
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-      ) : (
-        <div className="h-8 w-8" />
-      )}
-
-      {selectedModel && !isModelSelectionStep && (
-        <div className="flex flex-col items-center text-xs text-muted-foreground md:flex-row md:gap-1 px-2">
-          <span>Selected Model:</span>
-          <span className="font-semibold md:font-normal">
-            {selectedModelTitle}
-          </span>
-        </div>
-      )}
-
-      {isModelSelectionStep ? (
-        <Button
-          variant="default"
-          onClick={handleGenerateQuestions}
-          disabled={!selectedModel || isLoading}
-          size="default"
-        >
-          {isLoading ? "Generating..." : "Start Building"}
-        </Button>
-      ) : (
-        <Button
-          variant="default"
-          onClick={isFinalClarificationStep ? handleGenerateTDD : goToNextStep}
-          disabled={
-            (isQuestionStep && isCurrentQuestionUnanswered) || isLoading
-          }
-          size={isFinalClarificationStep ? "default" : "icon"}
-        >
-          {isFinalClarificationStep ? (
-            "Generate TDD"
-          ) : (
-            <ArrowRight className="h-4 w-4" />
-          )}
-        </Button>
-      )}
-    </CardFooter>
-  );
-};
+import { WizardFooter } from "@/components/wizard/wizard-footer";
 
 export const Wizard = () => {
   const {
@@ -114,8 +49,8 @@ export const Wizard = () => {
     cycleMessageIndex,
   } = useWizard();
 
-  const stepComponents = useMemo(
-    () => ({
+  const stepComponents = useMemo(() => {
+    const stepComponentsMap: Record<string, React.ReactNode> = {
       "initial-idea": (
         <InitialIdeaStep
           onSubmit={handleInitialSubmit}
@@ -127,21 +62,6 @@ export const Wizard = () => {
           onSelectModel={handleModelSelect}
           selectedModel={selectedModel}
         />
-      ),
-      ...questions.reduce(
-        (acc, q, index) => {
-          acc[`question-${index}`] = (
-            <QuestionStep
-              question={q.question}
-              options={q.options}
-              type={q.type}
-              selection={answers[index]}
-              onSelectionChange={(option) => handleAnswerSelect(index, option)}
-            />
-          );
-          return acc;
-        },
-        {} as Record<string, React.ReactNode>,
       ),
       "final-clarification": (
         <FinalClarificationStep
@@ -156,20 +76,34 @@ export const Wizard = () => {
           models={models}
         />
       ),
-    }),
-    [
-      answers,
-      finalClarification,
-      generatedTDD,
-      handleAnswerSelect,
-      handleInitialSubmit,
-      handleModelSelect,
-      isLoading,
-      questions,
-      selectedModel,
-      setFinalClarification,
-    ],
-  );
+    };
+
+    for (let index = 0; index < questions.length; index++) {
+      const q = questions[index];
+      stepComponentsMap[`question-${index}`] = (
+        <QuestionStep
+          question={q.question}
+          options={q.options}
+          type={q.type}
+          selection={answers[index]}
+          onSelectionChange={(option) => handleAnswerSelect(index, option)}
+        />
+      );
+    }
+
+    return stepComponentsMap;
+  }, [
+    answers,
+    finalClarification,
+    generatedTDD,
+    handleAnswerSelect,
+    handleInitialSubmit,
+    handleModelSelect,
+    isLoading,
+    questions,
+    selectedModel,
+    setFinalClarification,
+  ]);
 
   const currentStepData = steps[currentStep];
   const CurrentComponent =
@@ -230,7 +164,9 @@ export const Wizard = () => {
                 currentStep={currentProgressStep}
               />
             )}
+
             {CurrentComponent}
+
             {!isFirstStep && (
               <WizardFooter
                 isLoading={isLoading}
