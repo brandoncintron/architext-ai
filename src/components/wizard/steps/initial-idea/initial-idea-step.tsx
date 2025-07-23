@@ -6,6 +6,7 @@
 import { useEffect, useState } from "react";
 
 import { Loader2 } from "lucide-react";
+import { Open_Sans } from "next/font/google";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +30,11 @@ import { useInitialIdeaForm } from "@/components/wizard/steps/initial-idea/hooks
 import { InitialIdeaStepProps } from "@/components/wizard/types/types";
 import { placeholders, platforms } from "@/components/wizard/utils/constants";
 
+const openSans = Open_Sans({
+  variable: "--font-open-sans",
+  subsets: ["latin"],
+});
+
 export const InitialIdeaStep = ({
   onSubmit,
   isSubmitting,
@@ -46,7 +52,7 @@ export const InitialIdeaStep = ({
   return (
     <>
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">
+        <CardTitle className={`text-2xl font-bold ${openSans.className}`}>
           Welcome to Architext AI
         </CardTitle>
         <CardDescription>
@@ -54,7 +60,6 @@ export const InitialIdeaStep = ({
           fully-detailed technical design document suited to your needs.
         </CardDescription>
       </CardHeader>
-
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -76,9 +81,9 @@ export const InitialIdeaStep = ({
                           aria-hidden="true"
                         >
                           <div className="h-10">
-                            <AnimatedText 
-                            texts={placeholders} 
-                            currentIndex={currentPlaceholderIndex}
+                            <AnimatedText
+                              texts={placeholders}
+                              currentIndex={currentPlaceholderIndex}
                             />
                           </div>
                         </div>
