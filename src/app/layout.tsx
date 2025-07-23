@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { Open_Sans } from "next/font/google";
+import { Lexend } from "next/font/google";
 
 import "./globals.css";
 
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 
-const openSans = Open_Sans({
-  variable: "--font-open-sans",
+const lexend = Lexend({
+  variable: "--font-lexend",
   subsets: ["latin"],
+  weight: ["200", "300"],
 });
 
 export const metadata: Metadata = {
@@ -25,9 +26,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${openSans.variable} antialiased bg-background text-foreground`}
+        className={`${lexend.className} antialiased bg-background text-foreground`}
       >
-        <main className="flex h-screen flex-col overflow-x-hidden">
+        <main className="flex h-screen flex-col overflow-x-hidden dark:bg-gradient-to-br dark:from-gray-900 dark:to-black bg-gradient-to-br from-blue-200 to-background">
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
