@@ -5,9 +5,6 @@
 
 import React, { useMemo } from "react";
 
-import { RotateCcw } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import ErrorAlert from "@/components/ui/error-alert";
 import { useWizard } from "@/components/wizard/hooks/use-wizard";
@@ -47,6 +44,7 @@ export const Wizard = () => {
     isGenerating,
     isBackButtonDisabled,
     cycleMessageIndex,
+    handleStartOver,
   } = useWizard();
 
   const stepComponents = useMemo(() => {
@@ -134,20 +132,6 @@ export const Wizard = () => {
         <ErrorAlert error={error || ""} />
       </div>
 
-      {isQuestionStep && (
-        <div className="flex items-end justify-end w-full mb-2">
-          <Button
-            onClick={() => {
-              window.location.reload();
-            }}
-            size={"sm"}
-          >
-            <RotateCcw className="mr-2 h-4 w-4" />
-            Start Over
-          </Button>
-        </div>
-      )}
-
       <div className="flex w-full max-w-4xl justify-center items-center relative">
         <div className="absolute left-[-8rem] -z-10 h-[28.5rem] w-128 rounded-full bg-blue-500/40 blur-3xl md:left-[5rem]" />
         {isLoading && (isModelSelectionStep || isGenerating) ? (
@@ -157,11 +141,12 @@ export const Wizard = () => {
             cycleMessageIndex={cycleMessageIndex}
           />
         ) : (
-          <Card className="w-full min-h-[440px] md:min-h-full h-full max-w-2xl flex flex-col whitespace-normal">
+          <Card className="w-full min-h-[440px] md:min-h-full h-full max-w-2xl flex flex-col whitespace-normal border-none shadow-wizard">
             {currentProgressStep !== -1 && (
               <ProgressBar
                 steps={progressBarSteps}
                 currentStep={currentProgressStep}
+                handleStartOver={handleStartOver}
               />
             )}
 
