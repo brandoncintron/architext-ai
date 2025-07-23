@@ -132,8 +132,7 @@ export const Wizard = () => {
         <ErrorAlert error={error || ""} />
       </div>
 
-      <div className="flex w-full max-w-4xl justify-center items-center relative">
-        <div className="absolute left-[-8rem] -z-10 h-[28.5rem] w-128 rounded-full bg-blue-500/40 blur-3xl md:left-[5rem]" />
+      <div className="flex w-full max-w-4xl justify-center items-center relative ">
         {isLoading && (isModelSelectionStep || isGenerating) ? (
           <LoadingIndicator
             isGenerating={isGenerating}
