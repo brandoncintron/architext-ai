@@ -3,6 +3,8 @@
  */
 import { useMemo, useState } from "react";
 
+import createDOMPurify from "dompurify";
+
 import {
   generateQuestions,
   generateTdd,
@@ -55,12 +57,28 @@ export const useWizard = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
+  const handleStartOver = () => {
+    setCurrentStep(0);
+    setInitialFormValues(null);
+    setQuestions([]);
+    setAnswers([]);
+    setFinalClarification("");
+    setGeneratedTDD("");
+    setIsLoading(false);
+    setSelectedModel("gemini-2.0-flash");
+  };
+
   const handleInitialSubmit = async (values: InitialIdeaFormValues) => {
     setIsLoading(true);
     setError(null);
     try {
-      await validateIdea(values);
-      setInitialFormValues(values);
+      const DOMPurify = createDOMPurify(window);
+      const sanitizedValues = {
+        ...values,
+        idea: DOMPurify.sanitize(values.idea),
+      };
+      await validateIdea(sanitizedValues);
+      setInitialFormValues(sanitizedValues);
       goToNextStep();
     } catch (error) {
       if (error instanceof Error) {
@@ -173,6 +191,7 @@ export const useWizard = () => {
     handleGenerateQuestions,
     handleAnswerSelect,
     handleGenerateTDD,
+    handleStartOver,
     goToPreviousStep,
     goToNextStep,
     isLastStep,
