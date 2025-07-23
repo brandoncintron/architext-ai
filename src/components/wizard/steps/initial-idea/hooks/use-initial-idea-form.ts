@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import {
   initialIdeaFormSchema,
   InitialIdeaFormValues,
-} from "@/components/wizard/initial-idea/utils/schema";
+} from "@/components/wizard/steps/initial-idea/utils/schema";
 
 export const useInitialIdeaForm = ({
   onSubmit,

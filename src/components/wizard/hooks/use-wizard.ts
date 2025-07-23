@@ -1,15 +1,19 @@
 /**
  * @file This hook manages the state and logic for the multi-step wizard.
  */
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+
+import createDOMPurify from "dompurify";
 
 import {
   generateQuestions,
   generateTdd,
   validateIdea,
 } from "@/components/wizard/actions/actions";
-import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/schema";
+import { useCyclingIndex } from "@/components/wizard/hooks/use-cycling-index";
+import { InitialIdeaFormValues } from "@/components/wizard/steps/initial-idea/utils/schema";
 import { Model, Question } from "@/components/wizard/types/types";
+import { models } from "@/components/wizard/utils/constants";
 
 export const useWizard = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -17,24 +21,16 @@ export const useWizard = () => {
   const [error, setError] = useState<string | null>(null);
   const [initialFormValues, setInitialFormValues] =
     useState<InitialIdeaFormValues | null>(null);
-  const [selectedModel, setSelectedModel] = useState<Model | null>(null);
+  const [selectedModel, setSelectedModel] = useState<Model>(models[0].name);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<(string | string[] | null)[]>([]);
   const [finalClarification, setFinalClarification] = useState("");
   const [generatedTDD, setGeneratedTDD] = useState("");
-  const [cycleMessageIndex, setCycleMessageIndex] = useState(0);
 
-  useEffect(() => {
-    if (isLoading && selectedModel === "gemini-2.5-pro") {
-      const intervals = [20000, 40000, 60000];
-      const timers = intervals.map((delay, index) =>
-        setTimeout(() => setCycleMessageIndex(index + 1), delay),
-      );
-      return () => timers.forEach((timer) => clearTimeout(timer));
-    } else {
-      setCycleMessageIndex(0);
-    }
-  }, [isLoading, selectedModel]);
+  const { cycleMessageIndex } = useCyclingIndex({
+    isLoading,
+    selectedModel: selectedModel,
+  });
 
   const steps = useMemo(() => {
     const dynamicQuestionSteps = questions.map((q, index) => ({
@@ -61,12 +57,28 @@ export const useWizard = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
+  const handleStartOver = () => {
+    setCurrentStep(0);
+    setInitialFormValues(null);
+    setQuestions([]);
+    setAnswers([]);
+    setFinalClarification("");
+    setGeneratedTDD("");
+    setIsLoading(false);
+    setSelectedModel("gemini-2.0-flash");
+  };
+
   const handleInitialSubmit = async (values: InitialIdeaFormValues) => {
     setIsLoading(true);
     setError(null);
     try {
-      await validateIdea(values);
-      setInitialFormValues(values);
+      const DOMPurify = createDOMPurify(window);
+      const sanitizedValues = {
+        ...values,
+        idea: DOMPurify.sanitize(values.idea),
+      };
+      await validateIdea(sanitizedValues);
+      setInitialFormValues(sanitizedValues);
       goToNextStep();
     } catch (error) {
       if (error instanceof Error) {
@@ -87,8 +99,8 @@ export const useWizard = () => {
     setIsLoading(true);
     setError(null);
     try {
-      if (!initialFormValues || !selectedModel) {
-        throw new Error("Initial values or model not selected.");
+      if (!initialFormValues) {
+        throw new Error("Initial values not found.");
       }
       const data = await generateQuestions({
         ...initialFormValues,
@@ -179,6 +191,7 @@ export const useWizard = () => {
     handleGenerateQuestions,
     handleAnswerSelect,
     handleGenerateTDD,
+    handleStartOver,
     goToPreviousStep,
     goToNextStep,
     isLastStep,

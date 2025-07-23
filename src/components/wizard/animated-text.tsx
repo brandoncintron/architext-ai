@@ -9,7 +9,7 @@ interface AnimatedTextProps {
 
 export const AnimatedText = ({ texts, currentIndex }: AnimatedTextProps) => (
   <>
-    <div className="text-carousel text-xs text-muted-foreground">
+    <div className="text-carousel">
       {texts.map((text, index) => (
         <div
           key={text}

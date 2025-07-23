@@ -27,18 +27,19 @@ export const LoadingIndicator = ({
     "Just a few more moments...", // [3]
   ];
 
-  // Use progressive index, clamped to available messages
   const currentSubMessageIndex = isProModel
     ? Math.min(cycleMessageIndex, proModelSubMessages.length - 1)
     : 0;
 
   const proModelMessage = (
-    <div className="flex flex-col gap-2 ">
+    <div className="flex flex-col gap-2">
       <span>{proModelMainMessage}</span>
+      <span className="text-xs text-muted-foreground">
       <AnimatedText
         texts={proModelSubMessages}
         currentIndex={currentSubMessageIndex}
       />{" "}
+      </span>
     </div>
   );
 

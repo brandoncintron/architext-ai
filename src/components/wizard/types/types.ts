@@ -1,4 +1,4 @@
-import { InitialIdeaFormValues } from "@/components/wizard/initial-idea/utils/schema";
+import { InitialIdeaFormValues } from "@/components/wizard/steps/initial-idea/utils/schema";
 import { models } from "@/components/wizard/utils/constants";
 
 type ModelInfo = typeof models[number];
@@ -6,7 +6,7 @@ type ModelInfo = typeof models[number];
 // results-step.tsx
 export interface ResultsStepProps {
   tdd: string;
-  selectedModel: Model | null;
+  selectedModel: Model;
   models: readonly ModelInfo[];
 }
 
@@ -27,6 +27,7 @@ export interface Step {
 export interface ProgressBarProps {
   steps: Step[];
   currentStep: number;
+  handleStartOver: () => void;
 }
 
 // final-clarification-step.tsx
@@ -46,7 +47,7 @@ export type Model = (typeof models)[number]["name"];
 
 export interface ModelSelectionStepProps {
   onSelectModel: (model: Model) => void;
-  selectedModel: Model | null;
+  selectedModel: Model;
 }
 
 // wizard.tsx
@@ -56,7 +57,7 @@ export interface WizardFooterProps {
   isFinalClarificationStep: boolean;
   isQuestionStep: boolean;
   isCurrentQuestionUnanswered: boolean;
-  selectedModel: Model | null;
+  selectedModel: Model;
   isBackButtonDisabled: boolean;
   models: readonly ModelInfo[];
   goToPreviousStep: () => void;
@@ -68,7 +69,7 @@ export interface WizardFooterProps {
 // loading-indicator.tsx
 export interface LoadingIndicatorProps {
   isGenerating: boolean;
-  selectedModel: Model | null;
+  selectedModel: Model
   cycleMessageIndex: number;
 }
 
@@ -84,5 +85,5 @@ export type GenerateTddPayload = {
   questions: Question[];
   answers: (string | string[] | null)[];
   finalClarification: string;
-  model: Model | null;
+  model: Model;
 };

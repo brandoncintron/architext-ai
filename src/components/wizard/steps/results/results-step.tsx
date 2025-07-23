@@ -32,7 +32,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { useCopyToClipboard } from "@/components/wizard/results/hooks/use-copyto-clipboard";
+import { useCopyToClipboard } from "@/components/wizard/steps/results/hooks/use-copyto-clipboard";
 import { ResultsStepProps } from "@/components/wizard/types/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 
