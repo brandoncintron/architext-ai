@@ -3,14 +3,41 @@
  */
 "use client";
 
-import { Check } from "lucide-react";
+import { Check, RotateCcw } from "lucide-react";
 
 import { ProgressBarProps } from "@/components/wizard/types/types";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-export const ProgressBar = ({ steps, currentStep }: ProgressBarProps) => {
+import { Button } from "../ui/button";
+
+export const ProgressBar = ({
+  steps,
+  currentStep,
+  handleStartOver,
+}: ProgressBarProps) => {
+  const isMobile = useIsMobile();
+
+  const StartOverButton = (
+    <Button
+      variant="ghost"
+      onClick={handleStartOver}
+      size="sm"
+      className="text-muted-foreground"
+    >
+      <RotateCcw className="h-4 w-4 mr-2" />
+      <span className="text-xs md:text-sm">Start Over</span>
+    </Button>
+  );
+
   return (
-    <div className="flex justify-center w-full px-4 ">
-      <div className="flex items-center space-x-0 text-sm text-muted-foreground cursor-default">
+    <div className="flex items-center justify-between w-full px-4">
+      {isMobile ? (
+        <div className="flex justify-start w-full">{StartOverButton}</div>
+      ) : (
+        <div className="flex flex-1 justify-start">{StartOverButton}</div>
+      )}
+
+      <div className="flex items-center space-x-0 text-sm text-muted-foreground cursor-default mr-4 md:mr-0">
         {steps.map((step, index) => (
           <div key={step.name} className="flex items-center sm:space-x-2">
             <div
@@ -30,6 +57,7 @@ export const ProgressBar = ({ steps, currentStep }: ProgressBarProps) => {
           </div>
         ))}
       </div>
+      <div className="flex-1" />
     </div>
   );
 };
