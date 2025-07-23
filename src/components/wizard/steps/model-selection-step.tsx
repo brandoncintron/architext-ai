@@ -27,24 +27,26 @@ export const ModelSelectionStep = ({
         </CardDescription>
       </CardHeader>
       <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 md:mt-4">
-        {models.map((model) => (
-          <Card
-            key={model.name}
-            className={`cursor-pointer p-4 flex flex-col justify-center text-center gap-2 transition-all duration-200 h-32 ${
-              selectedModel === model.name
-                ? "bg-accent"
-                : "border-border hover:bg-accent"
-            }`}
-            onClick={() => onSelectModel(model.name)}
-          >
-            <h3 className="text-lg font-semibold flex items-center justify-center gap-2">
-              {model.icon}
-              {model.title}
-            </h3>
-            <p className="text-sm text-muted-foreground mx-4">
-              {model.description}
-            </p>
-          </Card>
+        {models.map((model, index) => (
+          <div key={index} className="flex justify-center">
+            <Card
+              key={model.name}
+              className={`cursor-pointer p-4 flex flex-col justify-start text-center gap-2 w-64 ${
+                selectedModel === model.name
+                  ? "bg-accent"
+                  : "border-border hover:bg-accent"
+              }`}
+              onClick={() => onSelectModel(model.name)}
+            >
+              <h3 className="text-lg font-semibold flex items-center justify-center gap-2">
+                {model.icon}
+                {model.title}
+              </h3>
+              <p className="text-sm text-muted-foreground mx-4">
+                {model.description}
+              </p>
+            </Card>
+          </div>
         ))}
       </CardContent>
     </>
