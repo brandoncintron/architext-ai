@@ -27,6 +27,7 @@ export interface Step {
 export interface ProgressBarProps {
   steps: Step[];
   currentStep: number;
+  handleStartOver: () => void;
 }
 
 // final-clarification-step.tsx
