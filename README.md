@@ -4,6 +4,8 @@ Architext AI is a web-based application designed to bridge the gap between a pro
 
 This project was built to solve a common problem for developers: the analysis paralysis that occurs when starting a new project. By automating the initial architectural planning, Architext AI empowers any developer to transform a product concept into a robust, developer-ready technical blueprint.
 
+Read the entire Devpost article I wrote here: https://devpost.com/software/architext-ai
+
 ## Features
 
 - **Conversational AI Wizard:** A multi-step process that intelligently asks clarifying questions about the user's project idea.
